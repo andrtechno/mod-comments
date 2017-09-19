@@ -1,9 +1,7 @@
 <?php
-
-/**
- * Behavior for commentabe models
- */
-class CommentBehavior extends CActiveRecordBehavior {
+namespace panix\mod\comments\components;
+use panix\mod\comments\models\Comments;
+class CommentBehavior extends \yii\base\Behavior {
 
     /**
      * @var string model primary key attribute
@@ -34,7 +32,7 @@ class CommentBehavior extends CActiveRecordBehavior {
 
     public function getOwnerTitle() {
         $attr = $this->owner_title;
-        return $this->getOwner()->$attr;
+        return $this->owner->$attr;
     }
 
     public function attach($owner) {

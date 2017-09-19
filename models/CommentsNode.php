@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Present ShopCategory as SJsTree node.
- */
+
 class CommentsNode extends CComponent implements \ArrayAccess {
 
     /**

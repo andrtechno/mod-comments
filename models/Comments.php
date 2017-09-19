@@ -1,6 +1,7 @@
 <?php
-
-class Comments extends ActiveRecord {
+namespace panix\mod\comments\models;
+use Yii;
+class Comments extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'comments';
     const STATUS_WAITING = 0;
@@ -10,14 +11,16 @@ class Comments extends ActiveRecord {
     public $defaultStatus;
     public $user_name;
     public $user_email;
-
-    public function init() {
-        if (!Yii::app()->user->isGuest && Yii::app()->controller instanceof Controller) {
-            $this->user_name = Yii::app()->user->getUsername();
-            $this->user_email = Yii::app()->user->email;
-        }
+    public static function find() {
+        return new CommentsQuery(get_called_class());
     }
-    
+  //  public function init() {
+       // if (!Yii::$app->user->isGuest && Yii::$app->controller instanceof Controller) {
+       //     $this->user_name = Yii::$app->user->getUsername();
+       //     $this->user_email = Yii::$app->user->email;
+       // }
+  //  }
+   /* 
     public function withSwitch($status) {
         $this->getDbCriteria()->mergeWith(array(
             'condition' => 'switch=:st',
@@ -53,12 +56,12 @@ class Comments extends ActiveRecord {
             )
                 ), $this);
     }
-
+*/
     public static function getStatuses() {
         return array(
-            self::STATUS_WAITING => Yii::t('CommentsModule.Comments', 'COMMENT_STATUS', self::STATUS_WAITING),
-            self::STATUS_APPROVED => Yii::t('CommentsModule.Comments', 'COMMENT_STATUS', self::STATUS_APPROVED),
-            self::STATUS_SPAM => Yii::t('CommentsModule.Comments', 'COMMENT_STATUS', self::STATUS_SPAM),
+            self::STATUS_WAITING => self::t('COMMENT_STATUS', self::STATUS_WAITING),
+            self::STATUS_APPROVED => self::t('COMMENT_STATUS', self::STATUS_APPROVED),
+            self::STATUS_SPAM => self::t('COMMENT_STATUS', self::STATUS_SPAM),
         );
     }
 
@@ -72,16 +75,16 @@ class Comments extends ActiveRecord {
      * @return bool
      */
     public function controlTimeout() {
-        $stime = strtotime($this->date_create) + Yii::app()->settings->get('comments', 'control_timeout');
+        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
         return (time() < $stime) ? true : false;
     }
 
     public function getEditLink() {
-        $stime = strtotime($this->date_create) + Yii::app()->settings->get('comments', 'control_timeout');
-        $userId = Yii::app()->user->id;
-        if ($userId == $this->user_id || Yii::app()->user->isSuperuser) {
+        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
+        $userId = Yii::$app->user->id;
+        if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
             return Html::link(Yii::t('app','UPDATE',1), 'javascript:void(0)', array(
-                        "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::app()->request->csrfToken . "'}); return false;",
+                        "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                         'class' => 'btn btn-primary btn-sm',
                         'title' => Yii::t('app', 'UPDATE', 1)
             ));
@@ -89,11 +92,11 @@ class Comments extends ActiveRecord {
     }
 
     public function getDeleteLink() {
-        $userId = Yii::app()->user->id;
-        $stime = strtotime($this->date_create) + Yii::app()->settings->get('comments', 'control_timeout');
-        if ($userId == $this->user_id || Yii::app()->user->isSuperuser) {
+        $userId = Yii::$app->user->id;
+        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
+        if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
             return Html::link(Yii::t('app','DELETE'), 'javascript:void(0)', array(
-                        "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::app()->request->csrfToken . "'}); return false;",
+                        "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                         'class' => 'btn btn-primary btn-sm',
                         'title' => Yii::t('app', 'DELETE')
             ));
@@ -103,10 +106,10 @@ class Comments extends ActiveRecord {
     public function getUserWithAvatar($size=false) {
         $user = $this->user;
         if (isset($user->login)) {
-        $avatar = Yii::app()->user->getAvatarUrl($size);
+        $avatar = Yii::$app->user->getAvatarUrl($size);
             return Html::link(Html::image($avatar) . $this->user->login, $user->getAdminEditUrl());
         } else {
-        $avatar = Yii::app()->user->getAvatarUrl($size,true);
+        $avatar = Yii::$app->user->getAvatarUrl($size,true);
             return Html::image($avatar) . $this->user_name;
         }
     }
@@ -115,10 +118,10 @@ class Comments extends ActiveRecord {
         $user = $this->user;
         if (isset($user->login)) {
 
-            return Yii::app()->user->getAvatarUrl($size);
+            return Yii::$app->user->getAvatarUrl($size);
         } else {
 
-            return  Yii::app()->user->getAvatarUrl($size);
+            return  Yii::$app->user->getAvatarUrl($size);
         }
     }
 
@@ -143,28 +146,22 @@ class Comments extends ActiveRecord {
             'new' => array('condition' => $alias . '.switch=0'),
         ),parent::scopes());
     }
-    /**
-     * Returns the static model of the specified AR class.
-     * @return ShopCategory the static model class
-     */
-    public static function model($className = __CLASS__) {
-        return parent::model($className);
-    }
+
 
     /**
      * @return string the associated database table name
      */
-    public function tableName() {
-        return '{{comments}}';
+    public static function tableName() {
+        return '{{%comments}}';
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules2() {
         $rulesGuest = array();
         $rules = array();
-        if (Yii::app()->user->isGuest) {
+        if (Yii::$app->user->isGuest) {
             $rulesGuest[] = array('user_name, user_email', 'required');
         } else {
             $rulesGuest = array();
@@ -185,7 +182,7 @@ class Comments extends ActiveRecord {
           ); */
     }
 
-    public function behaviors() {
+   /* public function behaviors() {
         return array(
             'like' => array(
                 'class' => 'ext.like.LikeBehavior',
@@ -198,15 +195,12 @@ class Comments extends ActiveRecord {
                 'attributes' => array('date_create'),
             )
         );
-    }
+    }*/
 
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public function attributeLabels2() {
-        $this->_attrLabels = array();
-        return CMap::mergeArray($this->_attrLabels, parent::attributeLabels());
-    }
+
 
     public static function getCSort() {
         $sort = new CSort;
@@ -221,7 +215,7 @@ class Comments extends ActiveRecord {
      * Retrieves a list of models based on the current search/filter conditions.
      * @return ActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search($params=array()) {
+    /*public function search($params=array()) {
         $criteria = new CDbCriteria;
         if(isset($params['model'])){
               $criteria->condition='model=:model AND object_id=:id';
@@ -235,6 +229,6 @@ class Comments extends ActiveRecord {
             'criteria' => $criteria,
                  'sort' => self::getCSort()
         ));
-    }
+    }*/
 
 }

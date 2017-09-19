@@ -1,8 +1,10 @@
 <?php
+namespace panix\mod\comments\controllers\admin;
+use Yii;
+use panix\mod\comments\models\CommentsSearch;
+class DefaultController extends \panix\engine\controllers\AdminController {
 
-class DefaultController extends AdminController {
 
-    public $topButtons = false;
 
     public function actions() {
         return array(
@@ -16,22 +18,21 @@ class DefaultController extends AdminController {
     }
 
     public function actionIndex() {
-        $model = new Comments('search');
-        Yii::app()->clientScript->registerScriptFile($this->module->assetsUrl . '/admin/comments.index.js');
 
-        $this->pageName = Yii::t('CommentsModule.default', 'MODULE_NAME');
+       // Yii::$app->clientScript->registerScriptFile($this->module->assetsUrl . '/admin/comments.index.js');
+
+        $this->pageName = Yii::t('comments/default', 'MODULE_NAME');
 
         $this->breadcrumbs = array($this->pageName);
-        if (!empty($_GET['Comments']))
-            $model->attributes = $_GET['Comments'];
 
-        $dataProvider = $model->search();
-        $dataProvider->pagination->pageSize = 10;
 
-        $this->render('index', array(
-            'model' => $model,
-            'dataProvider' => $dataProvider
-        ));
+        $searchModel = new CommentsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
+        return $this->render('index', [
+                    'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+        ]);
     }
 
     /**
@@ -40,14 +41,14 @@ class DefaultController extends AdminController {
      * @throws CHttpException
      */
     public function actionUpdate($id) {
-        $model = Comments::model()->findByPk($id);
+        $model = Comments::findOne($id);
 
         if (!$model)
-            throw new CHttpException(404, Yii::t('CommentsModule.default', 'NO_FOUND_COMMENT'));
+            throw new HttpException(404, Yii::t('comments/default', 'NO_FOUND_COMMENT'));
 
-        $this->pageName = Yii::t('CommentsModule.default', 'EDITED');
+        $this->pageName = Yii::t('comments/default', 'EDITED');
 
-        if (Yii::app()->request->isPostRequest) {
+        if (Yii::$app->request->isPostRequest) {
             $model->attributes = $_POST['Comments'];
             if ($model->validate()) {
 
@@ -60,12 +61,12 @@ class DefaultController extends AdminController {
     }
 
     public function actionUpdateStatus() {
-        $ids = Yii::app()->request->getPost('ids');
-        $switch = Yii::app()->request->getPost('switch');
+        $ids = Yii::$app->request->post('ids');
+        $switch = Yii::$app->request->post('switch');
         $models = Comments::model()->findAllByPk($ids);
 
         if (!array_key_exists($switch, Comments::getStatuses()))
-            throw new CHttpException(404, Yii::t('CommentsModule.default', 'ERROR_UPDATE_STATUS'));
+            throw new CHttpException(404, Yii::t('comments/default', 'ERROR_UPDATE_STATUS'));
 
         if (!empty($models)) {
             foreach ($models as $comment) {
@@ -74,7 +75,7 @@ class DefaultController extends AdminController {
             }
         }
 
-        echo Yii::t('CommentsModule.default', 'SUCCESS_UPDATE_STATUS');
+        echo Yii::t('comments/default', 'SUCCESS_UPDATE_STATUS');
     }
 
 }

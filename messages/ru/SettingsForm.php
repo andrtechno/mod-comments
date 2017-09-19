@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'PAGENUM' => 'Количество комментариев на странице',
     'ALLOW_ADD' => 'Кто может добавлять комментарий',
     'ALLOW_VIEW' => 'Кто может видить комментарии',
@@ -9,5 +9,5 @@ return array(
     'BBEDITOR_BUTTONS' => 'Кнопки WysiBB',
     'BBEDITOR_ONLYBBMODE' => 'Только BB режим',
     'CONTROL_TIMEOUT'=>'Время управление владельца комментария в минутах.'
-);
+];
 ?>
