@@ -1,0 +1,21 @@
+{
+    "name": "panix/mod-comments",
+    "description": "Module comments",
+    "keywords": ["corner-cms", "module", "comments"],
+    "homepage": "https://github.com/andrtechno/mod-comments",
+    "type": "yii2-extension",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "CORNER CMS",
+            "email": "dev@corner-cms.com",
+            "homepage": "http://www.corner-cms.com/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "panix\\mod\\comments\\": ""
+        }
+    }
+}

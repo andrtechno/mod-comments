@@ -1,0 +1,23 @@
+.comment{
+    margin-bottom: 40px;
+
+
+}
+.comment .date{
+    font-size:14px;
+    color:#606060;
+}
+.comment-header b{
+    margin-right: 20px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.comment .comment-text{
+    font-size:16px;
+    color:#2b2b2b;
+    line-height: 27px;
+    margin-top: 10px;
+    margin-left: 30px;
+
+
+}
