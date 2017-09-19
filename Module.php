@@ -45,7 +45,7 @@ class Module extends \panix\engine\WebModule {
         'comments/reply_submit/' => 'comments/default/reply_submit',
         'comments/delete/<id:(\d+)>' => 'comments/default/delete',
         //'/comments/edit/save' => '/comments/default/edit',
-        'comments/create' => 'comments/default/create',
+        'comments/add' => 'comments/default/add',
         'comments/auth' => 'comments/default/authProvider',
         'comments/auth/<provide>' => 'comments/default/auth',
         'rate/<type:(up|down)>/<object_id:(\d+)>' => 'comments/default/rate',
@@ -57,27 +57,25 @@ class Module extends \panix\engine\WebModule {
             'label' => Yii::t('comments/default', 'MODULE_NAME'),
             'author' => 'andrew.panix@gmail.com',
             'version' => '1.0',
-            'icon' => Html::icon($this->icon),
+            'icon' => $this->icon,
             'description' => Yii::t('comments/default', 'MODULE_DESC'),
             'url' => ['/admin/comments'],
         ];
     }
 
     public function getAdminMenu() {
-
-
-        return array(
-            'system' => array(
-                'items' => array(
-                    array(
+        return [
+            'system' => [
+                'items' => [
+                    [
                         'label' => Yii::t('comments/default', 'MODULE_NAME'),
                         'url' => ['/admin/comments'],
-                        'icon' => Html::icon($this->icon),
+                        'icon' => $this->icon,
                         'count' => $this->countComments
-                    ),
-                ),
-            ),
-        );
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*public function getAdminSidebarMenu() {

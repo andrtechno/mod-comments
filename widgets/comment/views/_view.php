@@ -1,22 +1,28 @@
-<div id="comment_<?= $data->id ?>" name="comment_<?= $data->id ?>" class="row">
-    <div class="col-md-2 col-sm-2">
-        <?= Html::image($data->getAvatarUrl('70x70'), '', array('class' => 'img-rounded img-responsive')); ?>
+<?php
+
+use panix\engine\Html;
+use panix\engine\CMS;
+?>
+
+
+<div class="row" id="comment_<?= $model->id ?>" name="comment_<?= $model->id ?>">
+    <div class="col-sm-1">
+        <div class="thumbnail">
+            <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+        </div>
     </div>
-    <div class="col-md-10 col-sm-10 blog-comments outer-bottom-xs">
-        <div class="blog-comments inner-bottom-xs">
-            <h4><?= Html::encode($data->user_name); ?></h4>
-            <span class="review-action pull-right">
-                <?= CMS::date($data->date_create); ?> &sol;   
-                <a href=""> Repost</a> &sol;
-                <a href=""> Reply</a>
-            </span>
-            <p id="comment_text_<?= $data->id; ?>"><?= nl2br(CMS::bb_decode(Html::text($data->text))); ?></p>
+
+    <div class="col-sm-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong><?= Html::encode($model->user_name); ?></strong> <span class="text-muted"><?= CMS::date($model->date_create); ?></span>
+            </div>
+            <div class="panel-body">
+                <p id="comment_text_<?= $model->id; ?>"><?= nl2br(Html::text($model->text)); ?></p>
+            </div>
         </div>
     </div>
 </div>
-
-
-
 
 
 

@@ -1,6 +1,10 @@
 <?php
+
 namespace panix\mod\comments\components;
+
 use panix\mod\comments\models\Comments;
+use yii\db\ActiveRecord;
+
 class CommentBehavior extends \yii\base\Behavior {
 
     /**
@@ -18,6 +22,12 @@ class CommentBehavior extends \yii\base\Behavior {
      * @var string attribute name to present comment owner in admin panel. e.g: name - references to Page->name
      */
     public $owner_title;
+
+    public function events() {
+        return [
+            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+        ];
+    }
 
     /**
      * @return string pk name
@@ -44,30 +54,27 @@ class CommentBehavior extends \yii\base\Behavior {
      * @return mixed
      */
     public function afterDelete($event) {
-        if (Yii::app()->hasModule('comments')) {
-            Yii::import('mod.comments.models.Comments');
 
-            $pk = $this->getObjectPkAttribute();
-            Comments::model()->deleteAllByAttributes(array(
-                'model' => $this->getModelName(),
-                'object_id' => $this->getOwner()->$pk
-            ));
-        }
-        return parent::afterDelete($event);
+
+        $pk = $this->getObjectPkAttribute();
+        Comments::deleteAll([
+            'model' => $this->getModelName(),
+            'object_id' => $this->getOwner()->$pk
+        ]);
+
+        //  return parent::afterDelete($event);
     }
 
     /**
      * @return string approved comments count for object
      */
     public function getCommentsCount() {
-        Yii::import('mod.comments.models.Comments');
+
         $pk = $this->getObjectPkAttribute();
-        return Comments::model()
+        return Comments::find()
                         ->published()
-                        ->countByAttributes(array(
-                            'model' => $this->getModelName(),
-                            'object_id' => $this->getOwner()->$pk
-                        ));
+                        ->where(['model' => $this->getModelName(),'object_id' => $this->getOwner()->$pk])
+                        ->count();
     }
 
 }

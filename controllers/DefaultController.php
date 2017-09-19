@@ -1,6 +1,9 @@
 <?php
 namespace panix\mod\comments\controllers;
-
+use Yii;
+use yii\helpers\Json;
+use panix\engine\CMS;
+use panix\mod\comments\models\Comments;
 class DefaultController extends \panix\engine\controllers\WebController {
 
     public $defaultAction = 'admin';
@@ -74,10 +77,10 @@ class DefaultController extends \panix\engine\controllers\WebController {
 
     public function actionEdit() {
         $model = Comments::model()->findByPk((int) $_POST['_id']);
-        // Yii::app()->request->enableCsrfValidation=false;
+        // Yii::$app->request->enableCsrfValidation=false;
         if ($model->controlTimeout()) {
-            if (Yii::app()->request->isAjaxRequest) {
-                if ($model->user_id == Yii::app()->user->id || Yii::app()->user->getIsSuperuser()) {
+            if (Yii::$app->request->isAjaxRequest) {
+                if ($model->user_id == Yii::$app->user->id || Yii::$app->user->getIsSuperuser()) {
                     if (isset($_POST['Comments'])) {
                         $model->attributes = $_POST['Comments'];
                         if ($model->validate()) {
@@ -98,7 +101,7 @@ class DefaultController extends \panix\engine\controllers\WebController {
                         $this->render('_edit_form', array('model' => $model));
                     }
                 } else {
-                    die('Access denie ' . $model->user_id . ' - ' . Yii::app()->user->id);
+                    die('Access denie ' . $model->user_id . ' - ' . Yii::$app->user->id);
                 }
             } else {
                 die('Access denie 2');
@@ -177,30 +180,30 @@ class DefaultController extends \panix\engine\controllers\WebController {
         return $model;
     }
 
-    public function actionCreate() {
+    public function actionAdd() {
         $comment = new Comments;
-        $request = Yii::app()->request;
-        if ($request->isPostRequest && $request->isAjaxRequest) {
-            $comment->attributes = $request->getPost('Comments');
+        $request = Yii::$app->request;
+        if ($request->isPost && $request->isAjax) {
+            $comment->attributes = $request->post('Comments');
             if ($comment->validate()) {
-                if(Yii::app()->user->isSuperuser){
+                if(Yii::$app->user->can('admin')){
                     $comment->switch = 1;
                 }
                 $comment->save();
-                echo CJSON::encode(array(
+                echo Json::encode(array(
                     'success' => true,
-                    'grid_update'=>(Yii::app()->user->isSuperuser)?true:false,
-                    'message' => Yii::t('CommentsModule.default', 'SUCCESS_ADD', $comment->switch)
+                    'grid_update'=>(Yii::$app->user->can('admin'))?true:false,
+                    'message' => Yii::t('comments/default', 'SUCCESS_ADD', $comment->switch)
                 ));
-                Yii::app()->session['caf'] = CMS::time();
+                Yii::$app->session['caf'] = CMS::time();
             } else {
-                echo CJSON::encode(array(
+                echo Json::encode(array(
                     'success' => false,
                     'grid_update'=>false,
                     'message' => $comment->getError('text')
                 ));
             }
-            Yii::app()->end();
+            die;
         }
     }
 

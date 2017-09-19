@@ -47,6 +47,7 @@ class CommentWidget extends \panix\engine\data\Widget {
        // $this->render((Yii::$app->controller instanceof AdminController)?'comment_list_backend':'comment_list', array('dataProvider' => $dataProvider));
 
         return $this->render('comment_form', array(
+            'dataProvider'=>$dataProvider,
             'comment' => $comment,
             'currentUrl' => $currentUrl,
             'object_id'=>$this->model->$obj_id,

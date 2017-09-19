@@ -10,4 +10,4 @@ return [
     'BBEDITOR_ONLYBBMODE' => 'Только BB режим',
     'CONTROL_TIMEOUT'=>'Время управление владельца комментария в минутах.'
 ];
-?>
+
