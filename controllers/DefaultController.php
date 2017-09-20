@@ -190,6 +190,7 @@ class DefaultController extends \panix\engine\controllers\WebController {
                     $comment->switch = 1;
                 }
                 $comment->save();
+           // Yii::$app->session->addFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
                 echo Json::encode(array(
                     'success' => true,
                     'grid_update'=>(Yii::$app->user->can('admin'))?true:false,
@@ -203,8 +204,9 @@ class DefaultController extends \panix\engine\controllers\WebController {
                     'message' => $comment->getError('text')
                 ));
             }
-            die;
+            
         }
+        die;
     }
 
 }

@@ -51,6 +51,7 @@ $form = ActiveForm::begin([
 
 
 <script>
+     $(document).ready(function(){
     $('#comment-create-form').on('beforeSubmit', function (e) {
         var form = $(this);
         var formData = form.serialize();
@@ -60,7 +61,11 @@ $form = ActiveForm::begin([
             data: formData,
             dataType: 'json',
             success: function (data) {
-                alert('Test');
+                
+                $.pjax.reload({container: '#pjax-comments',url:"/page/test"});
+                //$.pjax.reload('#pjax-comments');
+                //common.notify(data.message,'success');
+               //return false;
             },
             error: function () {
                 alert("Something went wrong");
@@ -68,5 +73,7 @@ $form = ActiveForm::begin([
         });
     }).on('submit', function (e) {
         e.preventDefault();
+    
+    });
     });
 </script>

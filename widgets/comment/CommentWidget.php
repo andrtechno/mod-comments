@@ -32,15 +32,15 @@ class CommentWidget extends \panix\engine\data\Widget {
         
         $query = Comments::find()
                 ->published()
-                ->orderBy('date_create DESC')
+                ->orderBy('id DESC')
                 ->where(['model'=>$this->model->getModelName(),'object_id'=>$this->model->id]);
         
         $dataProvider = new ActiveDataProvider([
                     'query' => $query,
-                    //'pagination' => array(
+                    'pagination' => [
                        // 'pageVar' => 'comment_page',
-                       // 'pageSize' => $config['pagenum']
-                    //)
+                        'pageSize' => $config['pagenum']
+                    ]
                 ]);
 
         $obj_id = $this->model->getObjectPkAttribute();
