@@ -26,7 +26,7 @@ $form = ActiveForm::begin([
 
 
 
-        <? //= $form->field($model, 'create_btn_action')->dropDownList($model::getButtonIconSizeList(),[])  ?>
+        <?php echo $form->field($model, 'create_btn_action')->dropDownList($model::getButtonIconSizeList(),[])  ?>
     </div>
     <div class="panel-footer text-center">
         <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
