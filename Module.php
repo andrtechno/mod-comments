@@ -59,7 +59,7 @@ class Module extends \panix\engine\WebModule {
             'version' => '1.0',
             'icon' => $this->icon,
             'description' => Yii::t('comments/default', 'MODULE_DESC'),
-            'url' => ['/admin/comments'],
+            'url' => ['/comments'],
         ];
     }
 
@@ -69,7 +69,7 @@ class Module extends \panix\engine\WebModule {
                 'items' => [
                     [
                         'label' => Yii::t('comments/default', 'MODULE_NAME'),
-                        'url' => ['/admin/comments'],
+                        'url' => ['/comments'],
                         'icon' => $this->icon,
                         'count' => $this->countComments
                     ],

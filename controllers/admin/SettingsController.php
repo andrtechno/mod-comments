@@ -13,7 +13,7 @@ class SettingsController extends \panix\engine\controllers\AdminController {
         $this->pageName = Yii::t('app', 'SETTINGS');
         $this->breadcrumbs[] = [
             'label' => Yii::t('comments/default', 'MODULE_NAME'),
-            'url' => ['/admin/comments']
+            'url' => ['/comments']
         ];
         $this->breadcrumbs[] = $this->pageName;
         $model = new SettingsForm;
