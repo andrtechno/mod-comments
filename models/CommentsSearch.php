@@ -8,7 +8,7 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\comments\models\Comments;
 
 /**
- * CommentsSearch represents the model behind the search form about `app\common\modules\comments\models\Comments`.
+ * CommentsSearch represents the model behind the search form about `panix\mod\comments\models\Comments`.
  */
 class CommentsSearch extends Comments {
 
