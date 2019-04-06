@@ -3,8 +3,10 @@
 namespace panix\mod\comments\models;
 
 use Yii;
+use panix\engine\Html;
+use panix\engine\db\ActiveRecord;
 
-class Comments extends \panix\engine\db\ActiveRecord {
+class Comments extends ActiveRecord {
 
     const MODULE_ID = 'comments';
     const STATUS_WAITING = 0;
@@ -80,15 +82,15 @@ class Comments extends \panix\engine\db\ActiveRecord {
      * @return bool
      */
     public function controlTimeout() {
-        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
+        $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         return (time() < $stime) ? true : false;
     }
 
     public function getEditLink() {
-        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
+        $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         $userId = Yii::$app->user->id;
         if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
-            return Html::link(Yii::t('app', 'UPDATE', 1), 'javascript:void(0)', array(
+            return Html::a(Yii::t('app', 'UPDATE', 1), 'javascript:void(0)', array(
                         "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                         'class' => 'btn btn-primary btn-sm',
                         'title' => Yii::t('app', 'UPDATE', 1)
@@ -98,9 +100,9 @@ class Comments extends \panix\engine\db\ActiveRecord {
 
     public function getDeleteLink() {
         $userId = Yii::$app->user->id;
-        $stime = strtotime($this->date_create) + Yii::$app->settings->get('comments', 'control_timeout');
+        $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
-            return Html::link(Yii::t('app', 'DELETE'), 'javascript:void(0)', array(
+            return Html::a(Yii::t('app', 'DELETE'), 'javascript:void(0)', array(
                         "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                         'class' => 'btn btn-primary btn-sm',
                         'title' => Yii::t('app', 'DELETE')
@@ -112,10 +114,10 @@ class Comments extends \panix\engine\db\ActiveRecord {
         $user = $this->user;
         if (isset($user->login)) {
             $avatar = Yii::$app->user->getAvatarUrl($size);
-            return Html::link(Html::image($avatar) . $this->user->login, $user->getAdminEditUrl());
+            return Html::a(Html::img($avatar) . $this->user->login, $user->getAdminEditUrl());
         } else {
             $avatar = Yii::$app->user->getAvatarUrl($size, true);
-            return Html::image($avatar) . $this->user_name;
+            return Html::img($avatar) . $this->user_name;
         }
     }
 
@@ -133,7 +135,7 @@ class Comments extends \panix\engine\db\ActiveRecord {
     public function getUserName() {
         $user = $this->user;
         if (isset($user->login)) {
-            return Html::link($user->login, $user->getAdminEditUrl());
+            return Html::a($user->login, $user->getAdminEditUrl());
         } else {
             return $this->user_name;
         }
@@ -146,7 +148,7 @@ class Comments extends \panix\engine\db\ActiveRecord {
         );
     }
 
-    public function scopes() {
+    public function scopes222() {
         $alias = $this->getTableAlias(true);
         return CMap::mergeArray(array(
                     'new' => array('condition' => $alias . '.switch=0'),
@@ -195,7 +197,7 @@ class Comments extends \panix\engine\db\ActiveRecord {
      */
     public static function getCSort() {
         $sort = new CSort;
-        $sort->defaultOrder = 't.date_create DESC, t.switch DESC';
+        $sort->defaultOrder = 't.created_at DESC, t.switch DESC';
         $sort->attributes = array(
             '*'
         );

@@ -1,21 +1,28 @@
 <?php
+
 namespace panix\mod\comments\controllers;
+
 use Yii;
 use yii\helpers\Json;
 use panix\engine\CMS;
 use panix\mod\comments\models\Comments;
-class DefaultController extends \panix\engine\controllers\WebController {
+use yii\web\Response;
+
+class DefaultController extends \panix\engine\controllers\WebController
+{
 
     public $defaultAction = 'admin';
 
-    public function filters() {
+    public function filters()
+    {
         return array(
-                //   'accessControl', // perform access control for CRUD operations
-                //  'ajaxOnly + PostComment, Delete, Approve, Edit',
+            //   'accessControl', // perform access control for CRUD operations
+            //  'ajaxOnly + PostComment, Delete, Approve, Edit',
         );
     }
 
-    public function actions() {
+    public function actions()
+    {
         return array(
             'captcha' => array(
                 'class' => 'CCaptchaAction',
@@ -29,7 +36,8 @@ class DefaultController extends \panix\engine\controllers\WebController {
      * This method is used by the 'accessControl' filter.
      * @return array access control rules
      */
-    public function accessRules() {
+    public function accessRules()
+    {
         return array(
             array('allow',
                 'actions' => array('postComment', 'captcha', 'authProvider', 'auth'),
@@ -49,7 +57,8 @@ class DefaultController extends \panix\engine\controllers\WebController {
         );
     }
 
-    public function actionRate($type, $object_id) {
+    public function actionRate($type, $object_id)
+    {
         // $model = Yii::import("mod.comments.models.NestedComments");
         $like = new Like;
         $like->model = 'mod.comments.models.Comments';
@@ -59,9 +68,9 @@ class DefaultController extends \panix\engine\controllers\WebController {
             $modelClass = Yii::import("mod.comments.models.Comments");
             $model = $modelClass::model()->findByPk($object_id);
             if ($type == 'up') {
-                $model->like+=1;
+                $model->like += 1;
             } elseif ($type == 'down') {
-                $model->like-=1;
+                $model->like -= 1;
             }
             $model->saveNode();
 
@@ -75,8 +84,9 @@ class DefaultController extends \panix\engine\controllers\WebController {
         echo CJSON::encode($json);
     }
 
-    public function actionEdit() {
-        $model = Comments::model()->findByPk((int) $_POST['_id']);
+    public function actionEdit()
+    {
+        $model = Comments::model()->findByPk((int)$_POST['_id']);
         // Yii::$app->request->enableCsrfValidation=false;
         if ($model->controlTimeout()) {
             if (Yii::$app->request->isAjaxRequest) {
@@ -119,7 +129,8 @@ class DefaultController extends \panix\engine\controllers\WebController {
      * Deletes a particular model.
      * @param integer $id the ID of the model to be deleted
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $model = $this->loadModel($id);
         if ($model->controlTimeout()) {
             $result = array('deletedID' => $id);
@@ -140,25 +151,26 @@ class DefaultController extends \panix\engine\controllers\WebController {
     /**
      * Deletes a particular model.
      * @param integer $id the ID of the model to be deleted
-
-      public function actionDelete($id) {
-      $model = $this->loadModel($id);
-      $result = array('deletedID' => $id);
-      if ($model->delete()) {
-      $result['code'] = 'success';
-      $result['flash_message'] = 'Комментарий удален.';
-      } else {
-      $result['code'] = 'fail';
-      $result['flash_message'] = 'Ошибка удаление.';
-      }
-      echo CJSON::encode($result);
-      } */
+     *
+     * public function actionDelete($id) {
+     * $model = $this->loadModel($id);
+     * $result = array('deletedID' => $id);
+     * if ($model->delete()) {
+     * $result['code'] = 'success';
+     * $result['flash_message'] = 'Комментарий удален.';
+     * } else {
+     * $result['code'] = 'fail';
+     * $result['flash_message'] = 'Ошибка удаление.';
+     * }
+     * echo CJSON::encode($result);
+     * } */
 
     /**
      * Approves a particular model.
      * @param integer $id the ID of the model to be approve
      */
-    public function actionApprove($id) {
+    public function actionApprove($id)
+    {
         // we only allow deletion via POST request
         $result = array('approvedID' => $id);
         if ($this->loadModel($id)->setApproved())
@@ -173,40 +185,47 @@ class DefaultController extends \panix\engine\controllers\WebController {
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer the ID of the model to be loaded
      */
-    public function loadModel($id) {
+    public function loadModel($id)
+    {
         $model = Comments::model()->findByPk($id);
         if ($model === null)
-            throw new CHttpException(404);
+            $this->error404();
         return $model;
     }
 
-    public function actionAdd() {
+    public function actionAdd()
+    {
+
         $comment = new Comments;
         $request = Yii::$app->request;
+        $json = [];
         if ($request->isPost && $request->isAjax) {
             $comment->attributes = $request->post('Comments');
             if ($comment->validate()) {
-                if(Yii::$app->user->can('admin')){
+                if (Yii::$app->user->can('admin')) {
                     $comment->switch = 1;
                 }
                 $comment->save();
-           // Yii::$app->session->addFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
-                echo Json::encode(array(
+                Yii::$app->session['caf'] = time();
+
+                $json = [
                     'success' => true,
-                    'grid_update'=>(Yii::$app->user->can('admin'))?true:false,
-                    'message' => Yii::t('comments/default', 'SUCCESS_ADD', $comment->switch)
-                ));
-                Yii::$app->session['caf'] = CMS::time();
+                    'grid_update' => (Yii::$app->user->can('admin')) ? true : false,
+                    'message' => Yii::t('comments/default', $comment->switch ? 'SUCCESS_ADD' : 'SUCCESS_ADD_MODERATION')
+                ];
+
             } else {
-                echo Json::encode(array(
+
+                $json = [
                     'success' => false,
-                    'grid_update'=>false,
+                    'grid_update' => false,
                     'message' => $comment->getError('text')
-                ));
+                ];
             }
-            
+
         }
-        die;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        Yii::$app->response->data = $json;
     }
 
 }

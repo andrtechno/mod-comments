@@ -4,8 +4,9 @@ namespace panix\mod\comments\components;
 
 use panix\mod\comments\models\Comments;
 use yii\db\ActiveRecord;
+use yii\base\Behavior;
 
-class CommentBehavior extends \yii\base\Behavior {
+class CommentBehavior extends Behavior {
 
     /**
      * @var string model primary key attribute
@@ -50,10 +51,9 @@ class CommentBehavior extends \yii\base\Behavior {
     }
 
     /**
-     * @param CEvent $event
      * @return mixed
      */
-    public function afterDelete($event) {
+    public function afterDelete() {
 
 
         $pk = $this->getObjectPkAttribute();

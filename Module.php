@@ -5,10 +5,29 @@ namespace panix\mod\comments;
 use Yii;
 use panix\engine\Html;
 use panix\mod\comments\models\Comments;
-class Module extends \panix\engine\WebModule {
+use yii\base\BootstrapInterface;
+use panix\engine\WebModule;
+class Module extends WebModule implements BootstrapInterface{
 
     public $countComments;
     public $icon = 'comments';
+
+
+    public function bootstrap($app)
+    {
+        $app->getUrlManager()->addRules([
+            'comments/edit' => 'comments/default/edit',
+            'comments/reply/<id:(\d+)>' => 'comments/default/reply',
+            'comments/reply_submit/' => 'comments/default/reply_submit',
+            'comments/delete/<id:(\d+)>' => 'comments/default/delete',
+            //'/comments/edit/save' => '/comments/default/edit',
+            'comments/add' => 'comments/default/add',
+            'comments/auth' => 'comments/default/authProvider',
+            'comments/auth/<provide>' => 'comments/default/auth',
+            'rate/<type:(up|down)>/<object_id:(\d+)>' => 'comments/default/rate',
+        ], false);
+
+    }
 
     public function init() {
         // if (Yii::$app->db->schema->getTable(Comments::tableName())) {
@@ -39,16 +58,8 @@ class Module extends \panix\engine\WebModule {
         return $comment;
     }
 
-    public $routes = [
-        'comments/edit' => 'comments/default/edit',
-        'comments/reply/<id:(\d+)>' => 'comments/default/reply',
-        'comments/reply_submit/' => 'comments/default/reply_submit',
-        'comments/delete/<id:(\d+)>' => 'comments/default/delete',
-        //'/comments/edit/save' => '/comments/default/edit',
-        'comments/add' => 'comments/default/add',
-        'comments/auth' => 'comments/default/authProvider',
-        'comments/auth/<provide>' => 'comments/default/auth',
-        'rate/<type:(up|down)>/<object_id:(\d+)>' => 'comments/default/rate',
+    public $routes2 = [
+
     ];
 
 

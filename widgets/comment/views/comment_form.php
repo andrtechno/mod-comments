@@ -2,14 +2,9 @@
 
 use yii\widgets\ActiveForm;
 use panix\engine\Html;
+
 ?>
 
-
-<?php
-echo $this->render('comment_list', [
-    'dataProvider' => $dataProvider,
-]);
-?>
 
 <script>
     var comment = {
@@ -17,16 +12,24 @@ echo $this->render('comment_list', [
         foodAlert: true
     };
 </script>
-<?= Yii::t('comments/default', 'FORM_TEXT') ?>
 
 
-
-
-
-
+<h2 class="heading-gradient text-center"><?= Yii::t('comments/default', 'FORM_TEXT'); ?></h2>
 
 <?php
-$form = ActiveForm::begin([
+
+echo \panix\engine\bootstrap\Alert::widget([
+    'closeButton' => false,
+    'body' => Yii::t('comments/default', 'FORM_TEXT'),
+    'options' => ['class' => 'alert-info']
+])
+?>
+<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        <?php
+
+
+        $form = ActiveForm::begin([
             'id' => 'comment-create-form',
             'action' => ['/comments/add'],
             'options' => [
@@ -34,46 +37,52 @@ $form = ActiveForm::begin([
                 'name' => 'comment-create-form'
             ],
         ]);
-?>
+        ?>
+        <?= Html::activeHiddenInput($comment, 'object_id', ['value' => $object_id]); ?>
+        <?= Html::activeHiddenInput($comment, 'owner_title', ['value' => $owner_title]); ?>
+        <?= Html::activeHiddenInput($comment, 'model', ['value' => $model]); ?>
 
-<?= $form->field($comment, 'object_id')->hiddenInput(['value' => $object_id])->label(false); ?>
-<?= $form->field($comment, 'owner_title')->hiddenInput(['value' => $owner_title])->label(false); ?>
-<?= $form->field($comment, 'model')->hiddenInput(['value' => $model])->label(false); ?>
-<?php if (Yii::$app->user->isGuest) { ?>
-    <?= $form->field($comment, 'user_name') ?>
-    <?= $form->field($comment, 'user_email') ?>
-<?php } ?>
-<?= $form->field($comment, 'text')->textarea() ?>
-<?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
+        <?php if (Yii::$app->user->isGuest) { ?>
+            <?= $form->field($comment, 'user_name') ?>
+            <?= $form->field($comment, 'user_email') ?>
+        <?php } ?>
+        <?= $form->field($comment, 'text')->textarea() ?>
+        <div class="form-group text-center">
+            <?= Html::submitButton(Yii::t('app', 'SEND'), ['class' => 'btn btn-success']) ?>
+        </div>
 
-
-<?php ActiveForm::end(); ?>
-
-
-<script>
-     $(document).ready(function(){
-    $('#comment-create-form').on('beforeSubmit', function (e) {
-        var form = $(this);
-        var formData = form.serialize();
-        $.ajax({
-            url: form.attr("action"),
-            type: form.attr("method"),
-            data: formData,
-            dataType: 'json',
-            success: function (data) {
-                
-                $.pjax.reload({container: '#pjax-comments',url:"/page/test"});
-                //$.pjax.reload('#pjax-comments');
-                //common.notify(data.message,'success');
-               //return false;
-            },
-            error: function () {
-                alert("Something went wrong");
-            }
+        <?php ActiveForm::end(); ?>
+    </div>
+    <?php
+    $this->registerJs("
+    $(document).ready(function () {
+        $('#comment-create-form').on('beforeSubmit', function (e) {
+            var form = $(this);
+            var formData = form.serialize();
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: formData,
+                dataType: 'json',
+                success: function (data) {
+                    var test = $.pjax.reload('#pjax-comments', {timeout : false});
+                    common.notify(data.message,'success');
+                },
+                error: function () {
+                    alert(\"Something went wrong\");
+                }
+            });
+        }).on('submit', function (e) {
+            e.preventDefault();
         });
-    }).on('submit', function (e) {
-        e.preventDefault();
-    
     });
-    });
-</script>
+     ", yii\web\View::POS_END, 'comment-send');
+    ?>
+    <div class="col-lg-10 offset-lg-1">
+        <?php
+        echo $this->render('comment_list', [
+            'dataProvider' => $dataProvider,
+        ]);
+        ?>
+    </div>
+</div>

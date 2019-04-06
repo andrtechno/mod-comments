@@ -18,7 +18,7 @@ class CommentsSearch extends Comments {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['text','date_create'], 'safe'],
+            [['text','created_at'], 'safe'],
         ];
     }
 
@@ -58,7 +58,7 @@ class CommentsSearch extends Comments {
         ]);
 
         $query->andFilterWhere(['like', 'text', $this->text]);
-        $query->andFilterWhere(['like', 'DATE(date_create)', $this->date_create]);
+        $query->andFilterWhere(['like', 'DATE(created_at)', $this->created_at]);
 
 
 
@@ -67,7 +67,7 @@ class CommentsSearch extends Comments {
     public static function getSort() {
         $sort = new \yii\data\Sort([
             'attributes' => [
-                'date_create',
+                'created_at',
 
 
             ],

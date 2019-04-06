@@ -1,5 +1,6 @@
 <?php
 namespace panix\mod\comments\widgets\comment;
+use panix\engine\controllers\AdminController;
 use Yii;
 use panix\mod\comments\models\Comments;
 use panix\engine\data\ActiveDataProvider;
@@ -39,7 +40,7 @@ class CommentWidget extends \panix\engine\data\Widget {
                     'query' => $query,
                     'pagination' => [
                        // 'pageVar' => 'comment_page',
-                        'pageSize' => $config['pagenum']
+                        'pageSize' => $config->pagenum
                     ]
                 ]);
 
