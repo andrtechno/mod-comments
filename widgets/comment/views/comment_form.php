@@ -13,17 +13,9 @@ use panix\engine\Html;
     };
 </script>
 
-
-<h2 class="heading-gradient text-center"><?= Yii::t('comments/default', 'FORM_TEXT'); ?></h2>
-
-<?php
-
-echo \panix\engine\bootstrap\Alert::widget([
-    'closeButton' => false,
-    'body' => Yii::t('comments/default', 'FORM_TEXT'),
-    'options' => ['class' => 'alert-info']
-])
-?>
+<div class="text-center">
+<h2 class="heading-gradient"><?= Yii::t('comments/default', 'FORM_TEXT'); ?></h2>
+</div>
 <div class="row">
     <div class="col-lg-6 offset-lg-3">
         <?php
