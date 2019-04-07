@@ -1,6 +1,6 @@
 mod-comments
 ===========
-Module for CORNER CMS
+Module for Pixelion CMS
 
 [![Latest Stable Version](https://poser.pugx.org/panix/mod-comments/v/stable)](https://packagist.org/packages/panix/mod-comments) [![Total Downloads](https://poser.pugx.org/panix/mod-comments/downloads)](https://packagist.org/packages/panix/mod-comments) [![Monthly Downloads](https://poser.pugx.org/panix/mod-comments/d/monthly)](https://packagist.org/packages/panix/mod-comments) [![Daily Downloads](https://poser.pugx.org/panix/mod-comments/d/daily)](https://packagist.org/packages/panix/mod-comments) [![Latest Unstable Version](https://poser.pugx.org/panix/mod-comments/v/unstable)](https://packagist.org/packages/panix/mod-comments) [![License](https://poser.pugx.org/panix/mod-comments/license)](https://packagist.org/packages/panix/mod-comments)
 
