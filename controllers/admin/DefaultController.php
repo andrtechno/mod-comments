@@ -41,10 +41,9 @@ class DefaultController extends \panix\engine\controllers\AdminController {
      * @throws CHttpException
      */
     public function actionUpdate($id) {
-        $model = Comments::findOne($id);
 
-        if (!$model)
-            throw new HttpException(404, Yii::t('comments/default', 'NO_FOUND_COMMENT'));
+        $model = Comments::findModel($id,Yii::t('comments/default', 'NO_FOUND_COMMENT'));
+
 
         $this->pageName = Yii::t('comments/default', 'EDITED');
 
