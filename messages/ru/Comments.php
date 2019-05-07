@@ -11,6 +11,10 @@ return [
     'USER_EMAIL' => 'E-mail',
     'USER_ID' => 'Пользователь',
     'OBJECT_ID' => 'Объект',
-    'MODEL'=>'Модель',
-    'COMMENT_STATUS' => '0#Ждет одобрения|1#Подтвержден|2#Спам'
+    'MODEL' => 'Модель',
+    'COMMENT_STATUS_WAIT' => 'Ждет одобрения',
+    'COMMENT_STATUS_CONFIRMED' => 'Подтвержден',
+    'COMMENT_STATUS_SPAM' => 'Спам',
+    'CREATED_AT' => 'Дата добавления',
+    'UPDATED_AT' => 'Дата обновления',
 ];

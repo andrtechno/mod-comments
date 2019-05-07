@@ -1,12 +1,18 @@
 <?php
+
 namespace panix\mod\comments\controllers\admin;
+
 use Yii;
+use panix\mod\comments\models\Comments;
 use panix\mod\comments\models\CommentsSearch;
-class DefaultController extends \panix\engine\controllers\AdminController {
+use yii\web\NotFoundHttpException;
+
+class DefaultController extends \panix\engine\controllers\AdminController
+{
 
 
-
-    public function actions() {
+    public function actions()
+    {
         return array(
             'switch' => array(
                 'class' => 'ext.adminList.actions.SwitchAction',
@@ -17,9 +23,10 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         );
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
 
-       // Yii::$app->clientScript->registerScriptFile($this->module->assetsUrl . '/admin/comments.index.js');
+        // Yii::$app->clientScript->registerScriptFile($this->module->assetsUrl . '/admin/comments.index.js');
 
         $this->pageName = Yii::t('comments/default', 'MODULE_NAME');
 
@@ -30,42 +37,47 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
     /**
      * Update comment
      * @param $id
-     * @throws CHttpException
+     * @return string
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
 
-        $model = Comments::findModel($id,Yii::t('comments/default', 'NO_FOUND_COMMENT'));
+        $model = Comments::findModel($id, Yii::t('comments/default', 'NO_FOUND_COMMENT'));
 
 
         $this->pageName = Yii::t('comments/default', 'EDITED');
 
-        if (Yii::$app->request->isPostRequest) {
+        if (Yii::$app->request->isPost) {
             $model->attributes = $_POST['Comments'];
             if ($model->validate()) {
 
-                $model->saveNode();
-                $this->redirect(array('index'));
+                $model->save();
+
+                $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
+                if (!Yii::$app->request->isAjax)
+                    return Yii::$app->getResponse()->redirect($redirect);
             }
         }
 
-        $this->render('update', array('model' => $model));
+        return $this->render('update', array('model' => $model));
     }
 
-    public function actionUpdateStatus() {
+    public function actionUpdateStatus()
+    {
         $ids = Yii::$app->request->post('ids');
         $switch = Yii::$app->request->post('switch');
-        $models = Comments::model()->findAllByPk($ids);
+        $models = Comments::findAll($ids);
 
         if (!array_key_exists($switch, Comments::getStatuses()))
-            throw new CHttpException(404, Yii::t('comments/default', 'ERROR_UPDATE_STATUS'));
+            throw new NotFoundHttpException(Yii::t('comments/default', 'ERROR_UPDATE_STATUS'));
 
         if (!empty($models)) {
             foreach ($models as $comment) {

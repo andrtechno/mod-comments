@@ -2,11 +2,14 @@
 
 namespace panix\mod\comments\models;
 
+use panix\engine\CMS;
+use panix\mod\user\models\User;
 use Yii;
 use panix\engine\Html;
 use panix\engine\db\ActiveRecord;
 
-class Comments extends ActiveRecord {
+class Comments extends ActiveRecord
+{
 
     const MODULE_ID = 'comments';
     const STATUS_WAITING = 0;
@@ -17,16 +20,117 @@ class Comments extends ActiveRecord {
     public $user_name;
     public $user_email;
 
-    public static function find() {
+
+    public function getGridColumns()
+    {
+        $columns = [];
+        $columns['user_name'] = [
+            'attribute' => 'user_name',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+        $columns['text'] = [
+            'attribute' => 'text',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+        $columns['user_agent'] = [
+            'attribute' => 'user_agent',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+
+        $columns['ip_create'] = [
+            'attribute' => 'ip_create',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+
+        $columns['user_email'] = [
+            'attribute' => 'user_email',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+        $columns['owner_title'] = [
+            'attribute' => 'owner_title',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+        $columns['model'] = [
+            'attribute' => 'model',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+        $columns['object_id'] = [
+            'attribute' => 'object_id',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+        ];
+
+        $columns['created_at'] = [
+            'attribute' => 'created_at',
+            'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
+            'format' => 'raw',
+            'headerOptions' => ['style' => 'width:150px'],
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function ($model) {
+                if ($model->created_at) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . CMS::date($model->created_at)]);
+                    $html .= CMS::date($model->created_at);
+                    $html .= Html::endTag('span');
+                    return $html;
+                }
+                return null;
+            }
+        ];
+        $columns['updated_at'] = [
+            'attribute' => 'updated_at',
+            'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
+            'format' => 'raw',
+            'headerOptions' => ['style' => 'width:150px', 'class' => 'text-center'],
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function ($model) {
+                if ($model->updated_at) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . CMS::date($model->updated_at)]);
+                    $html .= CMS::date($model->updated_at);
+                    $html .= Html::endTag('span');
+                    return $html;
+                }
+                return null;
+            }
+        ];
+
+
+        $columns['DEFAULT_CONTROL'] = [
+            'class' => 'panix\engine\grid\columns\ActionColumn',
+        ];
+        $columns['DEFAULT_COLUMNS'] = [
+            [
+                'class' => \panix\engine\grid\sortable\Column::class,
+                'url' => ['/shop/product/sortable']
+            ],
+            [
+                'class' => 'panix\engine\grid\columns\CheckboxColumn',
+            ]
+        ];
+
+        return $columns;
+    }
+
+
+    public static function find()
+    {
         return new CommentsQuery(get_called_class());
     }
 
-      public function init() {
-     if (!Yii::$app->user->isGuest && Yii::$app->controller instanceof \panix\engine\controllers\WebController) {
-         $this->user_name = Yii::$app->user->getDisplayName();
-         $this->user_email = Yii::$app->user->email;
-     }
-      }
+    public function init()
+    {
+        if (!Yii::$app->user->isGuest && Yii::$app->controller instanceof \panix\engine\controllers\WebController) {
+            $this->user_name = Yii::$app->user->getDisplayName();
+            $this->user_email = Yii::$app->user->email;
+        }
+    }
+
     /*
       public function withSwitch($status) {
       $this->getDbCriteria()->mergeWith(array(
@@ -64,15 +168,17 @@ class Comments extends ActiveRecord {
       ), $this);
       }
      */
-    public static function getStatuses() {
-        return array(
-            self::STATUS_WAITING => self::t('COMMENT_STATUS', self::STATUS_WAITING),
-            self::STATUS_APPROVED => self::t('COMMENT_STATUS', self::STATUS_APPROVED),
-            self::STATUS_SPAM => self::t('COMMENT_STATUS', self::STATUS_SPAM),
-        );
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_WAITING => self::t('COMMENT_STATUS_WAIT'),
+            self::STATUS_APPROVED => self::t('COMMENT_STATUS_CONFIRMED'),
+            self::STATUS_SPAM => self::t('COMMENT_STATUS_SPAM'),
+        ];
     }
 
-    public function getStatusTitle() {
+    public function getStatusTitle()
+    {
         $statuses = self::getStatuses();
         return $statuses[$this->switch];
     }
@@ -81,36 +187,40 @@ class Comments extends ActiveRecord {
      * Определяет таймаут управление комментарием
      * @return bool
      */
-    public function controlTimeout() {
+    public function controlTimeout()
+    {
         $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         return (time() < $stime) ? true : false;
     }
 
-    public function getEditLink() {
+    public function getEditLink()
+    {
         $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         $userId = Yii::$app->user->id;
         if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
-            return Html::a(Yii::t('app', 'UPDATE', 1), 'javascript:void(0)', array(
-                        "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
-                        'class' => 'btn btn-primary btn-sm',
-                        'title' => Yii::t('app', 'UPDATE', 1)
-            ));
+            return Html::a(Yii::t('app', 'UPDATE'), 'javascript:void(0)', [
+                "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
+                'class' => 'btn btn-primary btn-sm',
+                'title' => Yii::t('app', 'UPDATE')
+            ]);
         }
     }
 
-    public function getDeleteLink() {
+    public function getDeleteLink()
+    {
         $userId = Yii::$app->user->id;
         $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
-            return Html::a(Yii::t('app', 'DELETE'), 'javascript:void(0)', array(
-                        "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
-                        'class' => 'btn btn-primary btn-sm',
-                        'title' => Yii::t('app', 'DELETE')
-            ));
+            return Html::a(Yii::t('app', 'DELETE'), 'javascript:void(0)', [
+                "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
+                'class' => 'btn btn-primary btn-sm',
+                'title' => Yii::t('app', 'DELETE')
+            ]);
         }
     }
 
-    public function getUserWithAvatar($size = false) {
+    public function getUserWithAvatar($size = false)
+    {
         $user = $this->user;
         if (isset($user->login)) {
             $avatar = Yii::$app->user->getAvatarUrl($size);
@@ -121,7 +231,8 @@ class Comments extends ActiveRecord {
         }
     }
 
-    public function getAvatarUrl($size = false) {
+    public function getAvatarUrl($size = false)
+    {
         $user = $this->user;
         if (isset($user->login)) {
 
@@ -132,7 +243,8 @@ class Comments extends ActiveRecord {
         }
     }
 
-    public function getUserName() {
+    public function getUserName()
+    {
         $user = $this->user;
         if (isset($user->login)) {
             return Html::a($user->login, $user->getAdminEditUrl());
@@ -141,28 +253,28 @@ class Comments extends ActiveRecord {
         }
     }
 
-    public function relations() {
-        return array(
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            'like' => array(self::HAS_ONE, 'Like', 'id'),
-        );
+
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public function scopes222() {
-        $alias = $this->getTableAlias(true);
-        return CMap::mergeArray(array(
-                    'new' => array('condition' => $alias . '.switch=0'),
-                        ), parent::scopes());
+    public function getLike()
+    {
+        return $this->hasOne(Like::class, ['id']);
     }
+
 
     /**
      * @return string the associated database table name
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%comments}}';
     }
 
-    public function rules() {
+    public function rules()
+    {
         $rules = [];
         $rulesGuest = [];
         if (Yii::$app->user->isGuest) {
@@ -195,7 +307,8 @@ class Comments extends ActiveRecord {
     /**
      * @return array customized attribute labels (name=>label)
      */
-    public static function getCSort() {
+    public static function getCSort()
+    {
         $sort = new CSort;
         $sort->defaultOrder = 't.created_at DESC, t.switch DESC';
         $sort->attributes = array(
@@ -205,23 +318,5 @@ class Comments extends ActiveRecord {
         return $sort;
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return ActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    /* public function search($params=array()) {
-      $criteria = new CDbCriteria;
-      if(isset($params['model'])){
-      $criteria->condition='model=:model AND object_id=:id';
-      $criteria->params=array(':model'=>$params['model'],':id'=>$params['object_id']);
-      }
-      $criteria->compare('id', $this->id, true);
-      $criteria->compare('text', $this->text, true);
-      $criteria->compare('ip_create', $this->ip_create, true);
 
-      return new ActiveDataProvider($this, array(
-      'criteria' => $criteria,
-      'sort' => self::getCSort()
-      ));
-      } */
 }

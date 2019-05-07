@@ -70,7 +70,7 @@ class Module extends WebModule implements BootstrapInterface{
             'version' => '1.0',
             'icon' => $this->icon,
             'description' => Yii::t('comments/default', 'MODULE_DESC'),
-            'url' => ['/comments'],
+            'url' => ['/admin/comments'],
         ];
     }
 
@@ -80,7 +80,7 @@ class Module extends WebModule implements BootstrapInterface{
                 'items' => [
                     [
                         'label' => Yii::t('comments/default', 'MODULE_NAME'),
-                        'url' => ['/comments'],
+                        'url' => ['/admin/comments'],
                         'icon' => $this->icon,
                         'count' => $this->countComments
                     ],

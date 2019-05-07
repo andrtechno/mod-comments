@@ -12,6 +12,8 @@ Pjax::begin([
     'timeout' => 5000,
     'id'=>  'pjax-'.strtolower(basename($dataProvider->query->modelClass)),
 ]);
+
+echo 'pjax-'.strtolower(basename($dataProvider->query->modelClass));
 //echo Html::beginForm(['/admin/pages/default/test'],'post',['id'=>'test','name'=>'test']);
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
