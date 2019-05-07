@@ -39,7 +39,7 @@
 
     <?= Html::activeHiddenField($comment, 'object_id', array('value' => $object_id)); ?>
     <?= Html::activeHiddenField($comment, 'owner_title', array('value' => $owner_title)); ?>
-    <?= Html::activeHiddenField($comment, 'model', array('value' => $model)); ?>
+    <?= Html::activeHiddenField($comment, 'handlerClass', array('value' => $model)); ?>
     <?= Html::activeHiddenField($comment, 'user_name'); ?>
     <?= Html::activeHiddenField($comment, 'user_email'); ?>
     <?= Html::activeHiddenField($comment, 'switch', array('value' => 1)); ?>

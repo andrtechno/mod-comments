@@ -19,19 +19,33 @@ class m180917_195313_comments extends Migration
     {
         $this->createTable(Comments::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
-            'user_id' => $this->integer()->unsigned(),
-            'manufacturer_id' => $this->integer()->unsigned(),
-            'category_id' => $this->integer()->unsigned(),
-            'main_category_id' => $this->integer()->unsigned(),
+            'user_id' => $this->integer()->null()->unsigned(),
+            'tree' => $this->smallInteger()->notNull()->unsigned(),
+            'lft' => $this->smallInteger()->notNull()->unsigned(),
+            'rgt' => $this->smallInteger()->notNull()->unsigned(),
+            'depth' => $this->smallInteger()->notNull()->unsigned(),
 
-            'ordern' => $this->integer(),
+            'text' => $this->text()->notNull(),
+            'ip_create' => $this->string(100),
+            'owner_title' => $this->string(255),
+            'user_name' => $this->string(255),
+            'user_email' => $this->string(255),
+            'user_agent' => $this->string(255),
+
+            'handlerClass' => $this->string(255),
+            'object_id' => $this->integer()->notNull()->unsigned(),
+
+            'switch' => $this->boolean()->defaultValue(1),
+            'created_at' => $this->integer(11)->null(),
+            'updated_at' => $this->integer(11)->null(),
         ], $this->tableOptions);
 
 
-        $this->createIndex('created_at', Comments::tableName(), 'created_at');
-        $this->createIndex('views', Comments::tableName(), 'views', 0);
-        $this->createIndex('ordern', Comments::tableName(), 'ordern', 0);
-        $this->createIndex('main_category_id', Comments::tableName(), 'main_category_id');
+        $this->createIndex('lft', Comments::tableName(), 'lft');
+        $this->createIndex('user_id', Comments::tableName(), 'user_id');
+        $this->createIndex('tree', Comments::tableName(), 'tree');
+        $this->createIndex('rgt', Comments::tableName(), 'rgt');
+        $this->createIndex('depth', Comments::tableName(), 'depth');
 
 
     }

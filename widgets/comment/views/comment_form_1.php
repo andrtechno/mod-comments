@@ -27,7 +27,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <?php echo Html::hiddenField('object_id', $object_id); ?>
 <?php echo Html::hiddenField('owner_title', $owner_title); ?>
-<?php echo Html::hiddenField('model', $model); ?>
+<?php echo Html::hiddenField('handlerClass', $model); ?>
 
 
 <div class="row">

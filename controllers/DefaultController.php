@@ -195,7 +195,7 @@ class DefaultController extends \panix\engine\controllers\WebController
 
     public function actionAdd()
     {
-
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $comment = new Comments;
         $request = Yii::$app->request;
         $json = [];
@@ -205,7 +205,7 @@ class DefaultController extends \panix\engine\controllers\WebController
                 if (Yii::$app->user->can('admin')) {
                     $comment->switch = 1;
                 }
-                $comment->save();
+                $comment->saveNode();
                 Yii::$app->session['caf'] = time();
 
                 $json = [
@@ -224,8 +224,8 @@ class DefaultController extends \panix\engine\controllers\WebController
             }
 
         }
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        Yii::$app->response->data = $json;
+
+        return $json;
     }
 
 }

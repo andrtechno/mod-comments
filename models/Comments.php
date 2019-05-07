@@ -2,11 +2,13 @@
 
 namespace panix\mod\comments\models;
 
+use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\CMS;
 use panix\mod\user\models\User;
 use Yii;
 use panix\engine\Html;
 use panix\engine\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 class Comments extends ActiveRecord
 {
@@ -264,6 +266,15 @@ class Comments extends ActiveRecord
         return $this->hasOne(Like::class, ['id']);
     }
 
+    public function behaviors()
+    {
+        return ArrayHelper::merge([
+            'tree' => [
+                'class' => NestedSetsBehavior::class,
+                'hasManyRoots'=>true
+            ],
+        ], parent::behaviors());
+    }
 
     /**
      * @return string the associated database table name

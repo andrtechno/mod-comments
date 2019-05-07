@@ -32,7 +32,7 @@ use panix\engine\Html;
         ?>
         <?= Html::activeHiddenInput($comment, 'object_id', ['value' => $object_id]); ?>
         <?= Html::activeHiddenInput($comment, 'owner_title', ['value' => $owner_title]); ?>
-        <?= Html::activeHiddenInput($comment, 'model', ['value' => $model]); ?>
+        <?= Html::activeHiddenInput($comment, 'handlerClass', ['value' => $model]); ?>
 
         <?php if (Yii::$app->user->isGuest) { ?>
             <?= $form->field($comment, 'user_name') ?>
@@ -60,8 +60,10 @@ use panix\engine\Html;
                     var test = $.pjax.reload('#pjax-comments', {timeout : false});
                     common.notify(data.message,'success');
                 },
-                error: function () {
-                    alert(\"Something went wrong\");
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
                 }
             });
         }).on('submit', function (e) {
