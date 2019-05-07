@@ -199,7 +199,7 @@ class Comments extends ActiveRecord
     {
         $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
         $userId = Yii::$app->user->id;
-        if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
+        if ($userId == $this->user_id) {
             return Html::a(Yii::t('app', 'UPDATE'), 'javascript:void(0)', [
                 "onClick" => "$('#comment_" . $this->id . "').comment('update',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                 'class' => 'btn btn-primary btn-sm',
@@ -212,7 +212,7 @@ class Comments extends ActiveRecord
     {
         $userId = Yii::$app->user->id;
         $stime = strtotime($this->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
-        if ($userId == $this->user_id || Yii::$app->user->isSuperuser) {
+        if ($userId == $this->user_id) {
             return Html::a(Yii::t('app', 'DELETE'), 'javascript:void(0)', [
                 "onClick" => "$('#comment_" . $this->id . "').comment('remove',{time:" . $stime . ", pk:" . $this->id . ", csrf:'" . Yii::$app->request->csrfToken . "'}); return false;",
                 'class' => 'btn btn-primary btn-sm',

@@ -86,7 +86,7 @@ class DefaultController extends \panix\engine\controllers\WebController
 
     public function actionEdit()
     {
-        $model = Comments::model()->findByPk((int)$_POST['_id']);
+        $model = Comments::findModel((int)$_POST['_id']);
         // Yii::$app->request->enableCsrfValidation=false;
         if ($model->controlTimeout()) {
             if (Yii::$app->request->isAjaxRequest) {
@@ -126,26 +126,33 @@ class DefaultController extends \panix\engine\controllers\WebController
     }
 
     /**
-     * Deletes a particular model.
-     * @param integer $id the ID of the model to be deleted
+     * @param $id
+     * @return array
      */
     public function actionDelete($id)
     {
-        $model = $this->loadModel($id);
-        if ($model->controlTimeout()) {
-            $result = array('deletedID' => $id);
-            if ($model->delete()) {
-                $result['code'] = 'success';
-                $result['flash_message'] = 'Комментарий удален.';
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = Comments::findModel($id);
+        $result = [];
+        if (Yii::$app->request->isAjax) {
+            if (($model->controlTimeout() && $model->user_id == Yii::$app->user->id) || Yii::$app->user->can('admin')) {
+
+                if ($model->deleteNode()) {
+                    $result['status'] = 'success';
+                    $result['message'] = 'Комментарий удален.';
+                } else {
+                    $result['status'] = 'fail';
+                    $result['message'] = 'Ошибка удаление.';
+                }
             } else {
-                $result['code'] = 'fail';
-                $result['flash_message'] = 'Ошибка удаление.';
+                $result['status'] = 'fail';
+                $result['message'] = 'Access denied';
             }
         } else {
-            $result['code'] = 'fail';
-            $result['flash_message'] = 'Таймаут';
+            $result['status'] = 'error';
+            $result['message'] = 'error';
         }
-        echo CJSON::encode($result);
+        return $result;
     }
 
     /**
@@ -209,7 +216,7 @@ class DefaultController extends \panix\engine\controllers\WebController
                     'success' => false,
                     'grid_update' => false,
                     'message' => 'Error',
-                    'errors'=>$comment->getErrors()
+                    'errors' => $comment->getErrors()
                 ];
             }
 

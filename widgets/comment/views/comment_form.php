@@ -52,10 +52,15 @@ use panix\engine\Html;
     <?php
     $this->registerJs("
     $(document).ready(function () {
+        var xhr;
         $('#comment-create-form').on('beforeSubmit', function (e) {
             var form = $(this);
             var formData = form.serialize();
-            $.ajax({
+            
+            if (xhr !== undefined)
+                xhr.abort();
+            
+            xhr = $.ajax({
                 url: form.attr('action'),
                 type: form.attr('method'),
                 data: formData,
