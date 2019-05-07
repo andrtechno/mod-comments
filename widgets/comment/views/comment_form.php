@@ -3,6 +3,10 @@
 use yii\widgets\ActiveForm;
 use panix\engine\Html;
 
+/**
+ * @var /yii/db/Model $object_id
+ */
+
 ?>
 
 
@@ -32,7 +36,7 @@ use panix\engine\Html;
         ?>
         <?= Html::activeHiddenInput($comment, 'object_id', ['value' => $object_id]); ?>
         <?= Html::activeHiddenInput($comment, 'owner_title', ['value' => $owner_title]); ?>
-        <?= Html::activeHiddenInput($comment, 'handlerClass', ['value' => $model]); ?>
+        <?= Html::activeHiddenInput($comment, 'handlerClass', ['value' => $handlerClass]); ?>
 
         <?php if (Yii::$app->user->isGuest) { ?>
             <?= $form->field($comment, 'user_name') ?>

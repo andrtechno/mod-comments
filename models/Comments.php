@@ -58,8 +58,8 @@ class Comments extends ActiveRecord
             'format' => 'html',
             'contentOptions' => ['class' => 'text-left'],
         ];
-        $columns['model'] = [
-            'attribute' => 'model',
+        $columns['handlerClass'] = [
+            'attribute' => 'handlerClass',
             'format' => 'html',
             'contentOptions' => ['class' => 'text-left'],
         ];
@@ -293,9 +293,9 @@ class Comments extends ActiveRecord
         } else {
             $rulesGuest = [];
         }
-        $rules[] = [['user_agent', 'ip_create', 'user_name', 'user_email', 'text', 'owner_title', 'model'], 'string'];
+        $rules[] = [['user_agent', 'ip_create', 'user_name', 'user_email', 'text', 'owner_title', 'handlerClass'], 'string'];
 
-        $rules[] = [['text', 'object_id', 'owner_title', 'model'], 'required'];
+        $rules[] = [['text', 'object_id', 'owner_title', 'handlerClass'], 'required'];
         //  $rules[] = ['date_create', 'date', 'format' => 'yyyy-M-d H:m:s'];
         return \yii\helpers\ArrayHelper::merge($rules, $rulesGuest);
     }

@@ -11,7 +11,7 @@ return [
     'USER_EMAIL' => 'E-mail',
     'USER_ID' => 'Пользователь',
     'OBJECT_ID' => 'Объект',
-    'MODEL' => 'Модель',
+    'HANDLERCLASS' => 'Модель',
     'COMMENT_STATUS_WAIT' => 'Ждет одобрения',
     'COMMENT_STATUS_CONFIRMED' => 'Подтвержден',
     'COMMENT_STATUS_SPAM' => 'Спам',

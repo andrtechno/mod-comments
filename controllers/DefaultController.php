@@ -171,27 +171,16 @@ class DefaultController extends \panix\engine\controllers\WebController
      */
     public function actionApprove($id)
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         // we only allow deletion via POST request
         $result = array('approvedID' => $id);
-        if ($this->loadModel($id)->setApproved())
+        if (Comments::loadModel($id)->setApproved())
             $result['code'] = 'success';
         else
             $result['code'] = 'fail';
-        echo CJSON::encode($result);
+        return $result;
     }
 
-    /**
-     * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer the ID of the model to be loaded
-     */
-    public function loadModel($id)
-    {
-        $model = Comments::model()->findByPk($id);
-        if ($model === null)
-            $this->error404();
-        return $model;
-    }
 
     public function actionAdd()
     {
@@ -219,7 +208,8 @@ class DefaultController extends \panix\engine\controllers\WebController
                 $json = [
                     'success' => false,
                     'grid_update' => false,
-                    'message' => $comment->getError('text')
+                    'message' => 'Error',
+                    'errors'=>$comment->getErrors()
                 ];
             }
 

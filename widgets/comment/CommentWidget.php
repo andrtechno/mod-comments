@@ -1,19 +1,25 @@
 <?php
+
 namespace panix\mod\comments\widgets\comment;
+
 use panix\engine\controllers\AdminController;
 use Yii;
 use panix\mod\comments\models\Comments;
 use panix\engine\data\ActiveDataProvider;
-class CommentWidget extends \panix\engine\data\Widget {
+
+class CommentWidget extends \panix\engine\data\Widget
+{
 
     public $model;
 
-    public function init() {
+    public function init()
+    {
 
-     //   $this->registerAssets();
+        //   $this->registerAssets();
     }
 
-    public function run() {
+    public function run()
+    {
 
         $module = Yii::$app->getModule('comments');
 
@@ -21,45 +27,39 @@ class CommentWidget extends \panix\engine\data\Widget {
         $currentUrl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $config = Yii::$app->settings->get('comments');
 
-       /* $criteria = new CDbCriteria;
-        $criteria->condition = '`t`.`model`=:class AND object_id=:pk';
-        $criteria->scopes = array('published');
-        $criteria->order = '`t`.`date_create` DESC';
-        $criteria->params = array(
-            ':class' => $this->model->getModelName(),
-            ':pk' => $this->model->id,
-        );*/
-
-        
         $query = Comments::find()
-                ->published()
-                ->orderBy('id DESC')
-                ->where(['model'=>$this->model->getModelName(),'object_id'=>$this->model->id]);
-        
+            ->published()
+            ->orderBy(['id' => SORT_DESC])
+            ->where([
+                'handlerClass' => $this->model->getHandlerClass(),
+                'object_id' => $this->model->id
+            ]);
+
         $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                    'pagination' => [
-                       // 'pageVar' => 'comment_page',
-                        'pageSize' => $config->pagenum
-                    ]
-                ]);
+            'query' => $query,
+            'pagination' => [
+                // 'pageVar' => 'comment_page',
+                'pageSize' => $config->pagenum
+            ]
+        ]);
 
         $obj_id = $this->model->getObjectPkAttribute();
-       // $this->render((Yii::$app->controller instanceof AdminController)?'comment_list_backend':'comment_list', array('dataProvider' => $dataProvider));
+        // $this->render((Yii::$app->controller instanceof AdminController)?'comment_list_backend':'comment_list', array('dataProvider' => $dataProvider));
 
         return $this->render('comment_form', array(
-            'dataProvider'=>$dataProvider,
+            'dataProvider' => $dataProvider,
             'comment' => $comment,
             'currentUrl' => $currentUrl,
-            'object_id'=>$this->model->$obj_id,
-            'owner_title'=>$this->model->getOwnerTitle(),
-            'model'=>$this->model->getModelName()
-            ));
+            'object_id' => $this->model->{$obj_id},
+            'owner_title' => $this->model->getOwnerTitle(),
+            'handlerClass' => $this->model->getHandlerClass()
+        ));
 
-        
+
     }
 
-    public function registerAssets() {
+    public function registerAssets()
+    {
         $assets = dirname(__FILE__) . '/assets';
         $baseUrl = Yii::$app->assetManager->publish($assets, false, -1, YII_DEBUG);
         $css = (Yii::$app->controller instanceof AdminController) ? 'admin_comments.css' : 'comments.css';

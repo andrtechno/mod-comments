@@ -44,7 +44,7 @@ class Module extends WebModule implements BootstrapInterface{
         if ($request->isPost && $request->isAjax) {
 
             $comment->attributes = $request->post('Comments');
-            $comment->model = $model->getModelName();
+            $comment->model = $model->getHandlerClass();
             $comment->owner_title = $model->getOwnerTitle();
             $comment->object_id = $model->$pkAttr;
             if ($comment->validate()) {

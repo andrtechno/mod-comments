@@ -1,10 +1,10 @@
 <?php
 
 
-class CommentsNode extends CComponent implements \ArrayAccess {
+class CommentsNode extends Component implements \ArrayAccess {
 
     /**
-     * @var ShopCategory
+     * @var Comments
      */
     protected $model;
 
