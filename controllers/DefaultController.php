@@ -206,9 +206,11 @@ class DefaultController extends WebController
         // if (Yii::$app->request->isAjax) {
         if (Yii::$app->request->isPost) {
             if ($comment->load(Yii::$app->request->post()) && $comment->validate()) {
-                $comment->appendTo($reply);
-                $result['status'] = 'success';
-                $result['message'] = 'OK';
+                if ($comment->appendTo($reply)) {
+                    $result['status'] = 'success';
+                    $result['message'] = 'OK';
+                    $reply->sendNotifyReply($comment);
+                }
             } else {
                 return ActiveForm::validate($comment);
                 //$result['errors'] = ActiveForm::validate($comment);

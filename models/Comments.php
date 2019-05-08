@@ -263,5 +263,17 @@ class Comments extends ActiveRecord
         return false;
     }
 
+    /**
+     * @param Comments $comment
+     */
+    public function sendNotifyReply(Comments $comment){
+        $mailer = Yii::$app->mailer;
+        $mailer->htmlLayout = "layouts/html";
+        $mailer->compose(['html' => '@comments/mail/notify'], ['model' => $this,'comment'=>$comment])
+            ->setFrom(['noreply@' . Yii::$app->request->serverName => Yii::$app->name . ' robot'])
+            ->setTo([Yii::$app->settings->get('app', 'email') => Yii::$app->name])
+            ->setSubject(Yii::t('comments/default', 'MAIL_SUBJECT', ['id' => $this->id]))
+            ->send();
+    }
 
 }
