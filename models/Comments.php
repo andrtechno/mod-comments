@@ -2,13 +2,14 @@
 
 namespace panix\mod\comments\models;
 
+use Yii;
+use yii\helpers\ArrayHelper;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\CMS;
 use panix\mod\user\models\User;
-use Yii;
 use panix\engine\Html;
 use panix\engine\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
+
 
 class Comments extends ActiveRecord
 {
@@ -142,6 +143,7 @@ class Comments extends ActiveRecord
                 $this->user_name = Yii::$app->user->getDisplayName();
                 $this->user_email = Yii::$app->user->email;
             }
+            //$this->text = htmlspecialchars($this->text);
             return true;
         } else {
             return false;
@@ -179,13 +181,10 @@ class Comments extends ActiveRecord
 
     public function getAvatarUrl($size = false)
     {
-        $user = $this->user;
-        if (isset($user->login)) {
-
-            return Yii::$app->user->getAvatarUrl($size);
+        if ($this->user) {
+            return $this->user->getAvatarUrl($size);
         } else {
-
-            return Yii::$app->user->getAvatarUrl($size);
+            return Yii::$app->user->getGuestAvatarUrl($size);
         }
     }
 
@@ -208,6 +207,11 @@ class Comments extends ActiveRecord
     public function getLike()
     {
         return $this->hasOne(Like::class, ['id']);
+    }
+
+    public function getHandler()
+    {
+        return $this->hasOne($this->handlerClass, ['id' => 'object_id']);
     }
 
     public function behaviors()
@@ -244,6 +248,7 @@ class Comments extends ActiveRecord
         } else {
             $rulesGuest = [];
         }
+        $rules[] = [['text', 'user_name', 'user_email', 'handlerClass'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process']; // XSS security
         $rules[] = [['user_agent', 'ip_create', 'user_name', 'user_email', 'text', 'owner_title', 'handlerClass'], 'string'];
 
         $rules[] = [['text', 'object_id', 'owner_title', 'handlerClass'], 'required'];
@@ -266,13 +271,14 @@ class Comments extends ActiveRecord
     /**
      * @param Comments $comment
      */
-    public function sendNotifyReply(Comments $comment){
+    public function sendNotifyReply(Comments $comment)
+    {
         $mailer = Yii::$app->mailer;
         $mailer->htmlLayout = "layouts/html";
-        $mailer->compose(['html' => '@comments/mail/notify'], ['model' => $this,'comment'=>$comment])
+        $mailer->compose(['html' => '@comments/mail/notify'], ['model' => $this, 'comment' => $comment])
             ->setFrom(['noreply@' . Yii::$app->request->serverName => Yii::$app->name . ' robot'])
             ->setTo([Yii::$app->settings->get('app', 'email') => Yii::$app->name])
-            ->setSubject(Yii::t('comments/default', 'MAIL_SUBJECT', ['id' => $this->id]))
+            ->setSubject(Yii::t('comments/default', 'На Ваш комментарий ответели'))
             ->send();
     }
 

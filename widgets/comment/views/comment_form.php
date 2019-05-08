@@ -72,8 +72,23 @@ use panix\engine\Html;
                 data: formData,
                 dataType: 'json',
                 success: function (data) {
-                    var test = $.pjax.reload('#pjax-comments', {timeout : false});
+
+                    
+                if (data.success) {
                     common.notify(data.message,'success');
+                    $.pjax.reload('#pjax-comments', {timeout : false});
+                }else{
+
+
+                        $.each(data.errors, function(i,error){
+                            common.notify(error,'error');
+                        });
+
+                        common.notify(data.message,'error');
+
+                }
+                    
+
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);

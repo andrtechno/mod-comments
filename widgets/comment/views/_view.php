@@ -7,12 +7,11 @@ use panix\engine\CMS;
 
 
 <div class="row" id="comment-<?= $model->id ?>">
-    <div class="col-sm-2 text-center">
-        <img class="img-fluid rounded-circle comment-user-photo mb-3"
-             src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+    <div class="col-sm-3 col-md-2 text-center text-md-right">
+        <img src="<?= $model->getAvatarUrl(); ?>" class="rounded-circle img-thumbnail comment-user-photo mb-3">
     </div>
 
-    <div class="col-sm-10">
+    <div class="col-sm-9 col-md-10">
         <div class="card">
             <div class="card-header">
                 <div class="">
