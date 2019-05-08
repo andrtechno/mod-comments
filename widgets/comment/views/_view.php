@@ -8,21 +8,19 @@ use panix\engine\CMS;
 
 <div class="row" id="comment-<?= $model->id ?>">
     <div class="col-sm-2 text-center">
-
         <img class="img-fluid rounded-circle comment-user-photo mb-3"
              src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-
     </div>
 
     <div class="col-sm-10">
         <div class="card">
             <div class="card-header">
-                <div class="row">
-                    <div class="col-sm-4">
+                <div class="">
+                    <div class="float-left">
                         <div class="comment-user-name"><?= Html::encode($model->user_name); ?></div>
 
                     </div>
-                    <div class="col-sm-8 text-right">
+                    <div class="float-right">
                         <span class="badge badge-light"><?= CMS::date($model->created_at); ?></span>
 
                         <?php
@@ -53,8 +51,30 @@ use panix\engine\CMS;
 
             </div>
             <div class="card-footer text-right">
-                    <?= Html::a('Ответить', ['#'],['class'=>'btn btn-sm btn-link']); ?>
+                    <?= Html::a('Ответить', ['/comments/default/reply','id'=>$model->id],[
+                        'data-id' => $model->id,
+                            'class'=>'btn btn-sm comment-reply btn-link'
+                    ]); ?>
             </div>
+        </div>
+        <div class="container-reply">
+                <div  id="test<?=$model->id?>"></div>
+            <?php
+          // print_r($model->query);
+            $descendants = $model->children()->orderBy(['id'=>SORT_DESC])->all();
+            foreach ($descendants as $data){ ?>
+
+
+
+
+                <?php
+                echo $this->render('_view',['model'=>$data]);
+                ?>
+
+
+
+            <?php } ?>
+
         </div>
     </div>
 </div>

@@ -21,6 +21,7 @@ class Module extends WebModule implements BootstrapInterface{
             'comments/reply_submit/' => 'comments/default/reply_submit',
             'comments/delete/<id:(\d+)>' => 'comments/default/delete',
             //'/comments/edit/save' => '/comments/default/edit',
+            'comments/add/<id:(\d+)>' => 'comments/default/add',
             'comments/add' => 'comments/default/add',
             'comments/auth' => 'comments/default/authProvider',
             'comments/auth/<provide>' => 'comments/default/auth',

@@ -7,8 +7,10 @@ use yii\helpers\Json;
 use panix\engine\CMS;
 use panix\mod\comments\models\Comments;
 use yii\web\Response;
+use panix\engine\controllers\WebController;
+use yii\widgets\ActiveForm;
 
-class DefaultController extends \panix\engine\controllers\WebController
+class DefaultController extends WebController
 {
 
     public $defaultAction = 'admin';
@@ -36,7 +38,7 @@ class DefaultController extends \panix\engine\controllers\WebController
      * This method is used by the 'accessControl' filter.
      * @return array access control rules
      */
-    public function accessRules()
+    public function accessRules2()
     {
         return array(
             array('allow',
@@ -90,38 +92,38 @@ class DefaultController extends \panix\engine\controllers\WebController
         $model = Comments::findModel(Yii::$app->request->get('id'));
         $result = [];
         //if (Yii::$app->request->isAjax) {
-            if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
-                if (isset($_POST['Comments'])) {
-                    $model->attributes = $_POST['Comments'];
-                    if ($model->validate()) {
-                        $model->save();
-                        $result = [
-                            'status' => 'success',
-                            'message' => 'Комментарий успешно отредактирован',
-                            'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
-                        ];
-                    } else {
-                        $result = [
-                            'status' => 'error',
-                            'response' => $model->getErrors()
-                        ];
-                    }
-
-                } else {
+        if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
+            if (isset($_POST['Comments'])) {
+                $model->attributes = $_POST['Comments'];
+                if ($model->validate()) {
+                    $model->save();
                     $result = [
                         'status' => 'success',
-                        'result' => $this->renderPartial('_edit_form', ['model' => $model])
+                        'message' => 'Комментарий успешно отредактирован',
+                        'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
                     ];
-                    //return $this->renderPartial('_edit_form', ['model' => $model]);
+                } else {
+                    $result = [
+                        'status' => 'error',
+                        'response' => $model->getErrors()
+                    ];
                 }
+
             } else {
-                $result['status'] = 'error';
-                $result['message'] = 'Access denied 1';
+                $result = [
+                    'status' => 'success',
+                    'result' => $this->renderPartial('_edit_form', ['model' => $model])
+                ];
+                //return $this->renderPartial('_edit_form', ['model' => $model]);
             }
-       // } else {
-       //     $result['status'] = 'error';
-       //     $result['message'] = 'Access denied 2';
-       // }
+        } else {
+            $result['status'] = 'error';
+            $result['message'] = 'Access denied 1';
+        }
+        // } else {
+        //     $result['status'] = 'error';
+        //     $result['message'] = 'Access denied 2';
+        // }
         return $result;
     }
 
@@ -178,46 +180,94 @@ class DefaultController extends \panix\engine\controllers\WebController
         Yii::$app->response->format = Response::FORMAT_JSON;
         // we only allow deletion via POST request
         $result = array('approvedID' => $id);
-        if (Comments::loadModel($id)->setApproved())
+        if (Comments::findModel($id)->setApproved())
             $result['code'] = 'success';
         else
             $result['code'] = 'fail';
         return $result;
     }
 
+    /**
+     * @param $id
+     * @return array|string
+     */
+    public function actionReply($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = [];
+        $result['status'] = 'error'; //default status
+        $reply = Comments::findModel($id);
+//	$this->enableCsrfValidation = false;
 
+        $comment = new Comments();
+        $comment->handlerClass = $reply->handlerClass;
+        $comment->object_id = $reply->object_id;
+        $comment->owner_title = $reply->owner_title;
+        // if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isPost) {
+            if ($comment->load(Yii::$app->request->post()) && $comment->validate()) {
+                $comment->appendTo($reply);
+                $result['status'] = 'success';
+                $result['message'] = 'OK';
+            } else {
+                return ActiveForm::validate($comment);
+                //$result['errors'] = ActiveForm::validate($comment);
+
+            }
+
+            return $result;
+        } else {
+            return $this->renderPartial('_reply_form', ['model' => $comment, 'reply' => $reply]);
+        }
+        //}
+
+    }
+
+    /**
+     * GET open form
+     * POST send form
+     *
+     * @return array
+     */
     public function actionAdd()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->get('id');
         $comment = new Comments;
+        $reply = Comments::findOne($id);
+
         $request = Yii::$app->request;
         $json = [];
-        if ($request->isPost && $request->isAjax) {
-            $comment->attributes = $request->post('Comments');
-            if ($comment->validate()) {
-                if (Yii::$app->user->can('admin')) {
-                    $comment->switch = 1;
-                }
-                $comment->saveNode();
-                Yii::$app->session['caf'] = time();
+        // if ($request->isPost && $request->isAjax) {
 
-                $json = [
-                    'success' => true,
-                    'grid_update' => (Yii::$app->user->can('admin')) ? true : false,
-                    'message' => Yii::t('comments/default', $comment->switch ? 'SUCCESS_ADD' : 'SUCCESS_ADD_MODERATION')
-                ];
-
-            } else {
-
-                $json = [
-                    'success' => false,
-                    'grid_update' => false,
-                    'message' => 'Error',
-                    'errors' => $comment->getErrors()
-                ];
+        $comment->attributes = $request->post('Comments');
+        if ($comment->validate()) {
+            if (Yii::$app->user->can('admin')) {
+                $comment->switch = 1;
             }
 
+            $comment->saveNode();
+
+
+            //
+            Yii::$app->session['caf'] = time();
+
+            $json = [
+                'success' => true,
+                'message' => Yii::t('comments/default', $comment->switch ? 'SUCCESS_ADD' : 'SUCCESS_ADD_MODERATION')
+            ];
+
+        } else {
+
+            $json = [
+                'success' => false,
+                'message' => 'Error',
+                'errors' => $comment->getErrors()
+            ];
         }
+
+        // }
 
         return $json;
     }

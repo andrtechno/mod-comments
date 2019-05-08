@@ -44,4 +44,53 @@ $(function () {
         e.preventDefault();
         return false;
     });
+
+
+    $(document).on('click', '.comment-reply', function (e) {
+        var that = $(this);
+        if (typeof xhr !== 'undefined')
+            xhr.abort();
+
+        xhr = $.ajax({
+            url: that.attr('href'),
+            dataType: 'json',
+            type: 'GET',
+            success: function (data) {
+                $('#test' + that.data('id')).html(data);
+
+
+            }
+        });
+        e.preventDefault();
+        return false;
+    });
+
+
+    /**
+     * Submit reply form
+     */
+    $(document).on('submit', 'form#comment-reply-form', function () {
+        var form = $(this);
+        // return false if form still have some validation errors
+        if (form.find('.has-error').length) {
+            return false;
+        }
+        // submit form
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (response) {
+
+                // $.pjax.reload('#note_update_id'); for pjax update
+                //$('#comment-reply-form').html(response);
+                //console.log(getupdatedata);
+                $.pjax.reload({container: '#pjax-comments', async: false});
+            },
+            error: function () {
+                console.log('internal server error');
+            }
+        });
+        return false;
+    });
 });

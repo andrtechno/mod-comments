@@ -85,6 +85,7 @@ use panix\engine\Html;
         <?php
         echo $this->render('comment_list', [
             'dataProvider' => $dataProvider,
+            'model' => $model,
         ]);
         ?>
     </div>

@@ -31,6 +31,7 @@ class CommentWidget extends \panix\engine\data\Widget
             ->published()
             ->orderBy(['id' => SORT_DESC])
             ->where([
+                'depth'=>1,
                 'handlerClass' => $this->model->getHandlerClass(),
                 'object_id' => $this->model->id
             ]);
@@ -50,6 +51,7 @@ class CommentWidget extends \panix\engine\data\Widget
             'dataProvider' => $dataProvider,
             'comment' => $comment,
             'currentUrl' => $currentUrl,
+            'model' => $this->model,
             'object_id' => $this->model->{$obj_id},
             'owner_title' => $this->model->getOwnerTitle(),
             'handlerClass' => $this->model->getHandlerClass()

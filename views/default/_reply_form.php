@@ -1,28 +1,25 @@
-
 <?php
-$form = $this->beginWidget('CActiveForm', array(
-    'id' => 'comment-reply-form-' . $model->id,
-    'action' => '/comments/reply_submit/',
-    //'enableClientValidation' => false,
-    //'enableAjaxValidation' => true, // Включаем аякс отправку
-    // 'clientOptions' => array(
-    //     'validateOnSubmit' => true,
-    //     'validateOnChange' => false,
-    //),
-    'htmlOptions' => array('class' => 'form', 'name' => 'comment-reply-form')
-        ));
+
+use yii\widgets\ActiveForm;
+use panix\engine\Html;
+
+
+$form = ActiveForm::begin([
+    'id' => 'comment-reply-form',
+    'action' => '/comments/reply/' . $reply->id,
+    'enableAjaxValidation' => true,
+]);
 ?>
 
 
-<div class="input-group">
-    <span class="input-group-addon"><?php echo Html::image(Yii::app()->user->avatarPath); ?></span>
-    <?php echo $form->textArea($model, 'text', array('rows' => 3, 'class' => 'form-control', 'placeholder' => $model->getAttributeLabel('text'))); ?>
-    <?php echo $form->error($model, 'text'); ?>
-</div>
+
+<?= $form->field($model, 'text')->textarea()->label(false); ?>
+
 <div class="text-right" style="margin-top:10px;">
+    <?= Html::submitButton(Yii::t('app', 'SEND'), ['class' => 'btn btn-success']) ?>
     <?php
-    echo Html::link(Yii::t('default', 'Ответить'), 'javascript:void(0)', array('onClick' => '$("#comment_' . $model->id . '").comment("reply_submit",{pk:"' . $model->id . '", model:"' . $model->model . '"}); return false;', 'class' => 'btn btn-success'));
+    echo Html::a(Yii::t('app', 'Ответить'), 'javascript:void(0)', ['class' => 'btn btn-success']);
     ?>
 </div>
 
-<?php $this->endWidget(); ?>
+<?php ActiveForm::end(); ?>
