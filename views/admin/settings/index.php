@@ -5,16 +5,14 @@ use panix\engine\bootstrap\ActiveForm;
 ?>
 <?php
 $form = ActiveForm::begin([
-            //  'id' => 'form',
-
             'options' => ['class' => 'form-horizontal'],
         ]);
 ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= $this->context->pageName ?></h3>
+<div class="card">
+    <div class="card-header">
+        <h5><?= $this->context->pageName ?></h5>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
 
         <?= $form->field($model, 'pagenum'); ?>
 
@@ -24,11 +22,8 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'control_timeout'); ?>
 
 
-
-
-        <?php echo $form->field($model, 'create_btn_action')->dropDownList($model::getButtonIconSizeList(),[])  ?>
     </div>
-    <div class="panel-footer text-center">
+    <div class="card-footer text-center">
         <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
     </div>
 </div>

@@ -2,6 +2,7 @@
 
 namespace panix\mod\comments\controllers\admin;
 
+use panix\engine\Html;
 use Yii;
 use panix\mod\comments\models\Comments;
 use panix\mod\comments\models\CommentsSearch;
@@ -88,5 +89,14 @@ class DefaultController extends \panix\engine\controllers\AdminController
 
         echo Yii::t('comments/default', 'SUCCESS_UPDATE_STATUS');
     }
-
+    public function getAddonsMenu()
+    {
+        return [
+           [
+                'label' => Yii::t('app', 'SETTINGS'),
+                'url' => array('/admin/comments/settings'),
+                'icon' => Html::icon('settings'),
+            ],
+        ];
+    }
 }

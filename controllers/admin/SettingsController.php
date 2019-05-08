@@ -4,8 +4,9 @@ namespace panix\mod\comments\controllers\admin;
 
 use Yii;
 use panix\mod\comments\models\SettingsForm;
+use panix\engine\controllers\AdminController;
 
-class SettingsController extends \panix\engine\controllers\AdminController {
+class SettingsController extends AdminController {
 
     public $topButtons = false;
 
@@ -13,15 +14,15 @@ class SettingsController extends \panix\engine\controllers\AdminController {
         $this->pageName = Yii::t('app', 'SETTINGS');
         $this->breadcrumbs[] = [
             'label' => Yii::t('comments/default', 'MODULE_NAME'),
-            'url' => ['/comments']
+            'url' => ['/admin/comments']
         ];
         $this->breadcrumbs[] = $this->pageName;
         $model = new SettingsForm;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->save();
-            $this->refresh();
+            return $this->refresh();
         }
-        return $this->render('index', array('model' => $model));
+        return $this->render('index', ['model' => $model]);
     }
 
 }

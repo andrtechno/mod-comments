@@ -9,7 +9,8 @@ use panix\engine\CMS;
 <div class="row" id="comment-<?= $model->id ?>">
     <div class="col-sm-2 text-center">
 
-        <img class="img-fluid rounded-circle comment-user-photo mb-3" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+        <img class="img-fluid rounded-circle comment-user-photo mb-3"
+             src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
 
     </div>
 
@@ -24,22 +25,20 @@ use panix\engine\CMS;
                         <span class="badge badge-light"><?= CMS::date($model->created_at); ?></span>
 
                         <?php
-                        $stime = strtotime($model->created_at) + Yii::$app->settings->get('comments', 'control_timeout');
-                        $userId = Yii::$app->user->id;
-                        if ($userId == $model->user_id) {
-                            echo Html::a(Html::icon('edit'), 'javascript:void(0)', [
-                                "onClick" => "$('#comment_" . $model->id . "').comment('update',{time:" . $stime . ", pk:" . $model->id . "}); return false;",
-                                'class' => 'btn btn-primary btn-sm',
+                        //if ($model->hasAccessControl()) {
+                            echo Html::a(Html::icon('edit'), ['/comments/default/update', 'id' => $model->id], [
+                                'class' => 'btn btn-sm btn-primary comment-update',
+                                'data-id'=>$model->id,
                                 'title' => Yii::t('app', 'UPDATE')
                             ]);
-                        }
+                        //}
                         ?>
                         <?php
-                        $userId = Yii::$app->user->id;
-                        if ($userId == $model->user_id) {
-                            echo Html::a(Html::icon('delete'), ['/comments/default/delete','id'=>$model->id], [
-                                'class' => 'btn btn-danger btn-sm comment-delete',
-                                'data-pjax'=>'0',
+                        if ($model->hasAccessControl()) {
+                            echo Html::a(Html::icon('delete'), ['/comments/default/delete', 'id' => $model->id], [
+                                'class' => 'btn btn-sm btn-danger comment-delete',
+                                'data-pjax' => '0',
+                                'data-id'=>$model->id,
                                 'title' => Yii::t('app', 'DELETE')
                             ]);
                         }
@@ -48,7 +47,7 @@ use panix\engine\CMS;
                 </div>
             </div>
             <div class="card-body">
-                <p id="comment_text_<?= $model->id; ?>"><?= nl2br(Html::text($model->text)); ?></p>
+                <div id="comment_text_<?= $model->id; ?>"><?= nl2br(Html::text($model->text)); ?></div>
             </div>
         </div>
     </div>

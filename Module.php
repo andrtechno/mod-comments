@@ -16,7 +16,7 @@ class Module extends WebModule implements BootstrapInterface{
     public function bootstrap($app)
     {
         $app->getUrlManager()->addRules([
-            'comments/edit' => 'comments/default/edit',
+            'comments/update/<id:(\d+)>' => 'comments/default/update',
             'comments/reply/<id:(\d+)>' => 'comments/default/reply',
             'comments/reply_submit/' => 'comments/default/reply_submit',
             'comments/delete/<id:(\d+)>' => 'comments/default/delete',

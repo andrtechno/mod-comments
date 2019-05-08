@@ -316,17 +316,18 @@ class Comments extends ActiveRecord
       } */
 
     /**
-     * @return array customized attribute labels (name=>label)
+     * @return bool
      */
-    public static function getCSort()
+    public function hasAccessControl()
     {
-        $sort = new CSort;
-        $sort->defaultOrder = 't.created_at DESC, t.switch DESC';
-        $sort->attributes = array(
-            '*'
-        );
-
-        return $sort;
+        $conf = (int) Yii::$app->settings->get('comments', 'control_timeout');
+        //echo date('Y-m-d H:i:s',time() + $conf);
+        //echo '<br>';
+        //echo date('Y-m-d H:i:s',$this->created_at);
+        if((time() - $conf <= $this->created_at) && $this->user_id == Yii::$app->user->id){
+            return true;
+        }
+        return false;
     }
 
 

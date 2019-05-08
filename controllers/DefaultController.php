@@ -84,45 +84,45 @@ class DefaultController extends \panix\engine\controllers\WebController
         echo CJSON::encode($json);
     }
 
-    public function actionEdit()
+    public function actionUpdate()
     {
-        $model = Comments::findModel((int)$_POST['_id']);
-        // Yii::$app->request->enableCsrfValidation=false;
-        if ($model->controlTimeout()) {
-            if (Yii::$app->request->isAjaxRequest) {
-                if ($model->user_id == Yii::$app->user->id || Yii::$app->user->getIsSuperuser()) {
-                    if (isset($_POST['Comments'])) {
-                        $model->attributes = $_POST['Comments'];
-                        if ($model->validate()) {
-                            $model->save();
-                            $data = array(
-                                'code' => 'success',
-                                'flash_message' => 'Комментарий успешно отредактирован',
-                                'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
-                            );
-                        } else {
-                            $data = array(
-                                'code' => 'fail',
-                                'response' => $model->getErrors()
-                            );
-                        }
-                        echo CJSON::encode($data);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = Comments::findModel(Yii::$app->request->get('id'));
+        $result = [];
+        //if (Yii::$app->request->isAjax) {
+            if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
+                if (isset($_POST['Comments'])) {
+                    $model->attributes = $_POST['Comments'];
+                    if ($model->validate()) {
+                        $model->save();
+                        $result = [
+                            'code' => 'success',
+                            'message' => 'Комментарий успешно отредактирован',
+                            'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
+                        ];
                     } else {
-                        $this->render('_edit_form', array('model' => $model));
+                        $result = [
+                            'code' => 'error',
+                            'response' => $model->getErrors()
+                        ];
                     }
+
                 } else {
-                    die('Access denie ' . $model->user_id . ' - ' . Yii::$app->user->id);
+                    $result = [
+                        'status' => 'success',
+                        'result' => $this->renderPartial('_edit_form', ['model' => $model])
+                    ];
+                    //return $this->renderPartial('_edit_form', ['model' => $model]);
                 }
             } else {
-                die('Access denie 2');
+                $result['status'] = 'error';
+                $result['message'] = 'Access denied 1';
             }
-        } else {
-            $data = array(
-                'code' => 'fail',
-                'response' => 'Время редактирование завершено!'
-            );
-            echo CJSON::encode($data);
-        }
+       // } else {
+       //     $result['status'] = 'error';
+       //     $result['message'] = 'Access denied 2';
+       // }
+        return $result;
     }
 
     /**
@@ -135,22 +135,21 @@ class DefaultController extends \panix\engine\controllers\WebController
         $model = Comments::findModel($id);
         $result = [];
         if (Yii::$app->request->isAjax) {
-            if (($model->controlTimeout() && $model->user_id == Yii::$app->user->id) || Yii::$app->user->can('admin')) {
-
+            if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
                 if ($model->deleteNode()) {
                     $result['status'] = 'success';
                     $result['message'] = 'Комментарий удален.';
                 } else {
-                    $result['status'] = 'fail';
+                    $result['status'] = 'error';
                     $result['message'] = 'Ошибка удаление.';
                 }
             } else {
-                $result['status'] = 'fail';
+                $result['status'] = 'error';
                 $result['message'] = 'Access denied';
             }
         } else {
             $result['status'] = 'error';
-            $result['message'] = 'error';
+            $result['message'] = 'Access denied';
         }
         return $result;
     }
