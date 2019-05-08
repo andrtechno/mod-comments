@@ -2,6 +2,7 @@
 
 use yii\widgets\ActiveForm;
 use panix\engine\CMS;
+
 //$currentUrl
 
 ?>
@@ -20,9 +21,9 @@ $form = ActiveForm::begin([
 ?>
 
 
-<?= $form->field($model, 'text')->textarea()->label(false) ?>
+<?= $form->field($model, 'text')->textarea()->label(false); ?>
     <div class="form-group text-center">
-        <?= \panix\engine\Html::submitButton(Yii::t('app', 'SEND'), ['class' => 'btn btn-success']) ?>
+        <?= \panix\engine\Html::submitButton(Yii::t('app', 'UPDATE'), ['class' => 'btn btn-primary']) ?>
     </div>
 
 <?php ActiveForm::end(); ?>

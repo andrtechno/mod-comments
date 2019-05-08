@@ -20,17 +20,18 @@ use panix\engine\CMS;
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="comment-user-name"><?= Html::encode($model->user_name); ?></div>
+
                     </div>
                     <div class="col-sm-8 text-right">
                         <span class="badge badge-light"><?= CMS::date($model->created_at); ?></span>
 
                         <?php
                         //if ($model->hasAccessControl()) {
-                            echo Html::a(Html::icon('edit'), ['/comments/default/update', 'id' => $model->id], [
-                                'class' => 'btn btn-sm btn-primary comment-update',
-                                'data-id'=>$model->id,
-                                'title' => Yii::t('app', 'UPDATE')
-                            ]);
+                        echo Html::a(Html::icon('edit'), ['/comments/default/update', 'id' => $model->id], [
+                            'class' => 'btn btn-sm btn-primary comment-update',
+                            'data-id' => $model->id,
+                            'title' => Yii::t('app', 'UPDATE')
+                        ]);
                         //}
                         ?>
                         <?php
@@ -38,16 +39,21 @@ use panix\engine\CMS;
                             echo Html::a(Html::icon('delete'), ['/comments/default/delete', 'id' => $model->id], [
                                 'class' => 'btn btn-sm btn-danger comment-delete',
                                 'data-pjax' => '0',
-                                'data-id'=>$model->id,
+                                'data-id' => $model->id,
                                 'title' => Yii::t('app', 'DELETE')
                             ]);
                         }
                         ?>
+
                     </div>
                 </div>
             </div>
             <div class="card-body">
                 <div id="comment_text_<?= $model->id; ?>"><?= nl2br(Html::text($model->text)); ?></div>
+
+            </div>
+            <div class="card-footer text-right">
+                    <?= Html::a('Ответить', ['#'],['class'=>'btn btn-sm btn-link']); ?>
             </div>
         </div>
     </div>

@@ -96,13 +96,13 @@ class DefaultController extends \panix\engine\controllers\WebController
                     if ($model->validate()) {
                         $model->save();
                         $result = [
-                            'code' => 'success',
+                            'status' => 'success',
                             'message' => 'Комментарий успешно отредактирован',
                             'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
                         ];
                     } else {
                         $result = [
-                            'code' => 'error',
+                            'status' => 'error',
                             'response' => $model->getErrors()
                         ];
                     }
@@ -134,21 +134,19 @@ class DefaultController extends \panix\engine\controllers\WebController
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = Comments::findModel($id);
         $result = [];
+        $result['status'] = 'error';
         if (Yii::$app->request->isAjax) {
             if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
                 if ($model->deleteNode()) {
                     $result['status'] = 'success';
                     $result['message'] = 'Комментарий удален.';
                 } else {
-                    $result['status'] = 'error';
                     $result['message'] = 'Ошибка удаление.';
                 }
             } else {
-                $result['status'] = 'error';
                 $result['message'] = 'Access denied';
             }
         } else {
-            $result['status'] = 'error';
             $result['message'] = 'Access denied';
         }
         return $result;
