@@ -17,7 +17,19 @@ use panix\engine\CMS;
             <div class="card-header">
                 <div class="">
                     <div class="float-left">
-                        <div class="comment-user-name"><?= Html::encode($model->user_name); ?></div>
+                        <div class="comment-user-name">
+                            <?php
+                            if ($model->user_id) {
+                                echo Html::icon('check', ['class' => 'text-success']);
+                            }
+                            ?>
+                            <strong><?= Html::encode($model->user_name); ?></strong>
+                            <?php
+                            if (!$model->user_id) {
+                                echo Html::tag('span', '(гость)', ['class' => 'badge badge-light']);
+                            }
+                            ?>
+                        </div>
 
                     </div>
                     <div class="float-right">
@@ -51,26 +63,23 @@ use panix\engine\CMS;
 
             </div>
             <div class="card-footer text-right">
-                    <?= Html::a('Ответить', ['/comments/default/reply','id'=>$model->id],[
-                        'data-id' => $model->id,
-                            'class'=>'btn btn-sm comment-reply btn-link'
-                    ]); ?>
+                <?= Html::a('Ответить', ['/comments/default/reply', 'id' => $model->id], [
+                    'data-id' => $model->id,
+                    'class' => 'btn btn-sm comment-reply btn-link'
+                ]); ?>
             </div>
         </div>
         <div class="container-reply">
-                <div  id="test<?=$model->id?>"></div>
+            <div id="test<?= $model->id ?>"></div>
             <?php
-          // print_r($model->query);
-            $descendants = $model->children()->orderBy(['id'=>SORT_DESC])->all();
-            foreach ($descendants as $data){ ?>
-
-
+            // print_r($model->query);
+            $descendants = $model->children()->orderBy(['id' => SORT_DESC])->all();
+            foreach ($descendants as $data) { ?>
 
 
                 <?php
-                echo $this->render('_view',['model'=>$data]);
+                echo $this->render('_view', ['model' => $data]);
                 ?>
-
 
 
             <?php } ?>

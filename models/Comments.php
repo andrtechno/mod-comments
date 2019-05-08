@@ -19,8 +19,8 @@ class Comments extends ActiveRecord
     const STATUS_SPAM = 2;
 
     public $defaultStatus;
-    public $user_name;
-    public $user_email;
+    //public $user_name;
+    //public $user_email;
 
 
     public function getGridColumns()
@@ -128,48 +128,27 @@ class Comments extends ActiveRecord
     public function init()
     {
         if (!Yii::$app->user->isGuest && Yii::$app->controller instanceof \panix\engine\controllers\WebController) {
-            $this->user_name = Yii::$app->user->getDisplayName();
-            $this->user_email = Yii::$app->user->email;
+            // $this->user_name = Yii::$app->user->getDisplayName();
+            // $this->user_email = Yii::$app->user->email;
         }
     }
 
-    /*
-      public function withSwitch($status) {
-      $this->getDbCriteria()->mergeWith(array(
-      'condition' => 'switch=:st',
-      'params' => array(':st' => $status)
-      ));
+    public function beforeSave($insert)
+    {
 
-      return $this;
-      }
-      public function getForm() {
-      Yii::import('ext.bootstrap.selectinput.SelectInput');
-      return new CMSForm(array(
-      'attributes' => array(
-      'id' => __CLASS__,
-      'class' => 'form-horizontal',
-      ),
-      'showErrorSummary' => false,
-      'elements' => array(
-      'user_agent' => array('type' => 'none'),
-      'ip_create' => array('type' => 'none'),
-      'date_create' => array('type' => 'none'),
-      'text' => array('type' => 'textarea'),
-      'switch' => array(
-      'type' => 'SelectInput',
-      'data' => self::getStatuses()
-      ),
-      ),
-      'buttons' => array(
-      'submit' => array(
-      'type' => 'submit',
-      'class' => 'btn btn-success',
-      'label' => ($this->isNewRecord) ? Yii::t('app', 'CREATE', 0) : Yii::t('app', 'SAVE')
-      )
-      )
-      ), $this);
-      }
-     */
+        if (parent::beforeSave($insert)) {
+
+            if (!Yii::$app->user->isGuest) {
+                $this->user_name = Yii::$app->user->getDisplayName();
+                $this->user_email = Yii::$app->user->email;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     public static function getStatuses()
     {
         return [
@@ -184,7 +163,6 @@ class Comments extends ActiveRecord
         $statuses = self::getStatuses();
         return $statuses[$this->switch];
     }
-
 
 
     public function getUserWithAvatar($size = false)
@@ -237,14 +215,14 @@ class Comments extends ActiveRecord
         return ArrayHelper::merge([
             'tree' => [
                 'class' => NestedSetsBehavior::class,
-                'hasManyRoots'=>true
+                'hasManyRoots' => true
             ],
-           /* 'like' => [
-                'class' => 'ext.like.LikeBehavior',
-                'model' => 'mod.comments.models.Comments',
-                'modelClass' => 'Comments',
-                'nodeSave' => true
-            ],*/
+            /* 'like' => [
+                 'class' => 'ext.like.LikeBehavior',
+                 'model' => 'mod.comments.models.Comments',
+                 'modelClass' => 'Comments',
+                 'nodeSave' => true
+             ],*/
         ], parent::behaviors());
     }
 
@@ -262,6 +240,7 @@ class Comments extends ActiveRecord
         $rulesGuest = [];
         if (Yii::$app->user->isGuest) {
             $rulesGuest[] = [['user_name', 'user_email'], 'required'];
+            $rulesGuest[] = ['user_email', 'email'];
         } else {
             $rulesGuest = [];
         }
@@ -277,8 +256,8 @@ class Comments extends ActiveRecord
      */
     public function hasAccessControl()
     {
-        $conf = (int) Yii::$app->settings->get('comments', 'control_timeout');
-        if((time() - $conf <= $this->created_at) && $this->user_id == Yii::$app->user->id){
+        $conf = (int)Yii::$app->settings->get('comments', 'control_timeout');
+        if ((time() - $conf <= $this->created_at) && $this->user_id == Yii::$app->user->id) {
             return true;
         }
         return false;

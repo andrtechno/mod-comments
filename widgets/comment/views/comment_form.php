@@ -18,7 +18,7 @@ use panix\engine\Html;
 </script>
 
 <div class="text-center">
-<h2 class="heading-gradient"><?= Yii::t('comments/default', 'FORM_TEXT'); ?></h2>
+    <h2 class="heading-gradient"><?= Yii::t('comments/default', 'FORM_TEXT'); ?></h2>
 </div>
 <div class="row">
     <div class="col-lg-6 offset-lg-3">
@@ -39,8 +39,14 @@ use panix\engine\Html;
         <?= Html::activeHiddenInput($comment, 'handlerClass', ['value' => $handlerClass]); ?>
 
         <?php if (Yii::$app->user->isGuest) { ?>
-            <?= $form->field($comment, 'user_name') ?>
-            <?= $form->field($comment, 'user_email') ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?= $form->field($comment, 'user_name') ?>
+                </div>
+                <div class="col-sm-6">
+                    <?= $form->field($comment, 'user_email') ?>
+                </div>
+            </div>
         <?php } ?>
         <?= $form->field($comment, 'text')->textarea() ?>
         <div class="form-group text-center">
