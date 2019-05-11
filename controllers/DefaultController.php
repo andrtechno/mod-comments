@@ -219,6 +219,7 @@ class DefaultController extends WebController
 
             return $result;
         } else {
+            Yii::$app->response->format = Response::FORMAT_HTML;
             return $this->renderPartial('_reply_form', ['model' => $comment, 'reply' => $reply]);
         }
         //}

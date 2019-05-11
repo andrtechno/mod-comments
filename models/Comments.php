@@ -273,13 +273,13 @@ class Comments extends ActiveRecord
      */
     public function sendNotifyReply(Comments $comment)
     {
-        $mailer = Yii::$app->mailer;
+        /*$mailer = Yii::$app->mailer;
         $mailer->htmlLayout = "layouts/html";
         $mailer->compose(['html' => '@comments/mail/notify'], ['model' => $this, 'comment' => $comment])
             ->setFrom(['noreply@' . Yii::$app->request->serverName => Yii::$app->name . ' robot'])
             ->setTo([Yii::$app->settings->get('app', 'email') => Yii::$app->name])
             ->setSubject(Yii::t('comments/default', 'На Ваш комментарий ответели'))
-            ->send();
+            ->send();*/
     }
 
 }
