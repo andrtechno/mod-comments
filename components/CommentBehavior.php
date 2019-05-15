@@ -67,7 +67,7 @@ class CommentBehavior extends Behavior
 
         $pk = $this->getObjectPkAttribute();
         Comments::deleteAll([
-            'model' => $this->getHandlerClass(),
+            'handlerClass' => $this->getHandlerClass(),
             'object_id' => $this->owner->{$pk}
         ]);
 
