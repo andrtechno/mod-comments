@@ -53,10 +53,12 @@ $(function () {
 
         xhr = $.ajax({
             url: that.attr('href'),
-            dataType: 'json',
+            dataType: 'html',
             type: 'GET',
             success: function (data) {
+                console.log('.comment-reply');
                 $('#test' + that.data('id')).html(data);
+                $('.container-reply').html(data);
 
 
             }
@@ -79,6 +81,7 @@ $(function () {
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
+            //dataType:'json',
             data: form.serialize(),
             success: function (response) {
 

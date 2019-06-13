@@ -76,9 +76,7 @@ use panix\engine\CMS;
             foreach ($descendants as $data) { ?>
 
 
-                <?php
-                echo $this->render('_view', ['model' => $data]);
-                ?>
+                <?= $this->render('_view', ['model' => $data]); ?>
 
 
             <?php } ?>
