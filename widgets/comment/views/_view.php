@@ -15,6 +15,7 @@ use panix\engine\CMS;
         <div class="card">
             <div class="card-header">
                 <div class="">
+
                     <div class="float-left">
                         <div class="comment-user-name">
                             <?php
@@ -62,6 +63,11 @@ use panix\engine\CMS;
 
             </div>
             <div class="card-footer text-right">
+                <?php
+                echo \panix\engine\widgets\like\LikeWidget::widget([
+                    'model' => $model
+                ]);
+                ?>
                 <?= Html::a('Ответить', ['/comments/default/reply', 'id' => $model->id], [
                     'data-id' => $model->id,
                     'class' => 'btn btn-sm comment-reply btn-link'
