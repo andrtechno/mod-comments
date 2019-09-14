@@ -73,34 +73,10 @@ class Comments extends ActiveRecord
         $columns['created_at'] = [
             'attribute' => 'created_at',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
-            'format' => 'raw',
-            'headerOptions' => ['style' => 'width:150px'],
-            'contentOptions' => ['class' => 'text-center'],
-            'value' => function ($model) {
-                if ($model->created_at) {
-                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . CMS::date($model->created_at)]);
-                    $html .= CMS::date($model->created_at);
-                    $html .= Html::endTag('span');
-                    return $html;
-                }
-                return null;
-            }
         ];
         $columns['updated_at'] = [
             'attribute' => 'updated_at',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
-            'format' => 'raw',
-            'headerOptions' => ['style' => 'width:150px', 'class' => 'text-center'],
-            'contentOptions' => ['class' => 'text-center'],
-            'value' => function ($model) {
-                if ($model->updated_at) {
-                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . CMS::date($model->updated_at)]);
-                    $html .= CMS::date($model->updated_at);
-                    $html .= Html::endTag('span');
-                    return $html;
-                }
-                return null;
-            }
         ];
 
 
