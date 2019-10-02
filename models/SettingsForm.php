@@ -36,4 +36,14 @@ class SettingsForm extends SettingsModel
         parent::save();
     }
 
+    public static function defaultSettings()
+    {
+        return [
+            'pagenum' => 10,
+            'flood_time' => 5,
+            'allow_add' => 1,
+            'allow_view' => 1,
+            'control_timeout' => 5 * 60
+        ];
+    }
 }

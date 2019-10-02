@@ -8,11 +8,12 @@ namespace panix\mod\comments\migrations;
  *
  * Class m180917_195313_comments
  */
-use panix\mod\comments\models\Comments;
 use panix\engine\db\Migration;
+use panix\mod\comments\models\Comments;
 
 class m180917_195313_comments extends Migration
 {
+    public $settingsForm = 'panix\mod\comments\models\SettingsForm';
 
     /**
      * {@inheritdoc}
@@ -45,6 +46,8 @@ class m180917_195313_comments extends Migration
         $this->createIndex('tree', Comments::tableName(), 'tree');
         $this->createIndex('rgt', Comments::tableName(), 'rgt');
         $this->createIndex('depth', Comments::tableName(), 'depth');
+
+        $this->loadSettings();
     }
 
     /**
