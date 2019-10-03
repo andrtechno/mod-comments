@@ -25,7 +25,6 @@ class SettingsForm extends SettingsModel
     {
         return [
             [['pagenum', 'flood_time', 'allow_add', 'allow_view', 'control_timeout'], 'required'],
-            //array('bad_name, bad_email', 'length', 'max' => 255),
             [['pagenum', 'control_timeout'], 'number'],
         ];
     }
