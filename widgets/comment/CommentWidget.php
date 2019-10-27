@@ -2,21 +2,19 @@
 
 namespace panix\mod\comments\widgets\comment;
 
-use panix\engine\controllers\AdminController;
 use Yii;
 use panix\mod\comments\models\Comments;
 use panix\engine\data\ActiveDataProvider;
+use panix\engine\data\Widget;
 
-class CommentWidget extends \panix\engine\data\Widget
+/**
+ * Class CommentWidget
+ * @package panix\mod\comments\widgets\comment
+ */
+class CommentWidget extends Widget
 {
 
     public $model;
-
-    public function init()
-    {
-
-        //   $this->registerAssets();
-    }
 
     public function run()
     {
@@ -31,7 +29,6 @@ class CommentWidget extends \panix\engine\data\Widget
             ->published()
             ->orderBy(['id' => SORT_DESC])
             ->where([
-                'depth'=>1,
                 'handler_hash' => $this->model->getHandlerHash(),
                 'object_id' => $this->model->id
             ]);
@@ -58,20 +55,6 @@ class CommentWidget extends \panix\engine\data\Widget
         ));
 
 
-    }
-
-    public function registerAssets()
-    {
-        $assets = dirname(__FILE__) . '/assets';
-        $baseUrl = Yii::$app->assetManager->publish($assets, false, -1, YII_DEBUG);
-        $css = (Yii::$app->controller instanceof AdminController) ? 'admin_comments.css' : 'comments.css';
-        if (is_dir($assets)) {
-            Yii::$app->clientScript->registerScriptFile($baseUrl . '/js/jquery.session.js', CClientScript::POS_HEAD);
-            Yii::$app->clientScript->registerScriptFile($baseUrl . '/js/comment.js', CClientScript::POS_HEAD);
-            Yii::$app->clientScript->registerCssFile($baseUrl . '/css/' . $css);
-        } else {
-            throw new Exception(__CLASS__ . ' - Error: Couldn\'t find assets to publish.');
-        }
     }
 
 }

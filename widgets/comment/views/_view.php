@@ -2,7 +2,7 @@
 
 use panix\engine\Html;
 use panix\engine\CMS;
-
+/** @var $model \panix\mod\comments\models\Comments */
 ?>
 
 
@@ -74,8 +74,7 @@ use panix\engine\CMS;
                 ]); ?>
             </div>
         </div>
-        <div class="container-reply">
-            <div id="test<?= $model->id ?>"></div>
+        <div class="container-reply" id="container-reply-<?= $model->id ?>">
             <?php
             // print_r($model->query);
             $descendants = $model->children()->orderBy(['id' => SORT_DESC])->all();

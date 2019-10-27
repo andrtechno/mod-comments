@@ -57,8 +57,9 @@ $(function () {
             type: 'GET',
             success: function (data) {
                 console.log('.comment-reply');
-                $('#test' + that.data('id')).html(data);
-                $('.container-reply').html(data);
+                //$('#test' + that.data('id')).html(data);
+                //$('.container-reply').html(data);
+                $('#container-reply-'+that.data('id')).html(data);
 
 
             }
