@@ -10,22 +10,26 @@ use panix\mod\comments\models\Comments;
 /**
  * CommentsSearch represents the model behind the search form about `panix\mod\comments\models\Comments`.
  */
-class CommentsSearch extends Comments {
+class CommentsSearch extends Comments
+{
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['id'], 'integer'],
-            [['text','created_at'], 'safe'],
+            [['id', 'object_id'], 'integer'],
+            [['user_name', 'user_email', 'handler_hash', 'handler_class', 'text', 'owner_title', 'user_agent', 'ip_create'], 'string'],
+            [['text', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() {
+    public function scenarios()
+    {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -37,13 +41,14 @@ class CommentsSearch extends Comments {
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+    public function search($params)
+    {
         $query = Comments::find();
 
         $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                    'sort'=> self::getSort(),
-                ]);
+            'query' => $query,
+            'sort' => self::getSort(),
+        ]);
 
         $this->load($params);
 
@@ -53,23 +58,33 @@ class CommentsSearch extends Comments {
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
+        $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'text', $this->text]);
+        $query->andFilterWhere(['like', 'user_name', $this->user_name]);
+        $query->andFilterWhere(['like', 'user_email', $this->user_email]);
+        $query->andFilterWhere(['like', 'object_id', $this->object_id]);
+        $query->andFilterWhere(['like', 'handler_class', $this->handler_class]);
+        $query->andFilterWhere(['like', 'handler_hash', $this->handler_hash]);
         $query->andFilterWhere(['like', 'DATE(created_at)', $this->created_at]);
-
+        $query->andFilterWhere(['like', 'DATE(updated_at)', $this->updated_at]);
 
 
         return $dataProvider;
     }
-    public static function getSort() {
+
+    public static function getSort()
+    {
         $sort = new \yii\data\Sort([
             'attributes' => [
+                'user_email',
+                'user_name',
+                'handler_class',
+                'handler_hash',
+                'object_id',
                 'created_at',
-
-
+                'updated_at',
+                'ip_create',
+                'text',
             ],
         ]);
         return $sort;

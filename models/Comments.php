@@ -16,13 +16,18 @@ use panix\engine\db\ActiveRecord;
  * @property string $handler_hash
  * @property string $handler_class
  * @property int $object_id
+ * @property int $user_id
  * @property int $id
+ * @property int $tree
  * @property string $owner_title
  * @property string $user_name
  * @property string $user_email
  * @property string $ip_create
  * @property string $text
  * @property string $user_agent
+ * @property int $created_at
+ * @property int $updated_at
+ * @property boolean $switch
  *
  * @package panix\mod\comments\models
  */
@@ -61,7 +66,7 @@ class Comments extends ActiveRecord
         $columns['ip_create'] = [
             'attribute' => 'ip_create',
             'format' => 'html',
-            'contentOptions' => ['class' => 'text-left'],
+            'contentOptions' => ['class' => 'text-center'],
         ];
 
         $columns['user_email'] = [
@@ -72,7 +77,7 @@ class Comments extends ActiveRecord
         $columns['owner_title'] = [
             'attribute' => 'owner_title',
             'format' => 'html',
-            'contentOptions' => ['class' => 'text-left'],
+            'contentOptions' => ['class' => 'text-center'],
         ];
         $columns['handler_class'] = [
             'attribute' => 'handler_class',
@@ -82,7 +87,7 @@ class Comments extends ActiveRecord
         $columns['object_id'] = [
             'attribute' => 'object_id',
             'format' => 'html',
-            'contentOptions' => ['class' => 'text-left'],
+            'contentOptions' => ['class' => 'text-center'],
         ];
 
         $columns['created_at'] = [
