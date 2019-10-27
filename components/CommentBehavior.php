@@ -2,10 +2,21 @@
 
 namespace panix\mod\comments\components;
 
+use panix\engine\CMS;
 use panix\mod\comments\models\Comments;
+use yii\caching\DbDependency;
 use yii\db\ActiveRecord;
 use yii\base\Behavior;
 
+
+/**
+ * Class CommentBehavior
+ *
+ * @property string $handlerHash
+ * @property string $handlerClass
+ *
+ * @package panix\mod\comments\components
+ */
 class CommentBehavior extends Behavior
 {
 
@@ -14,7 +25,7 @@ class CommentBehavior extends Behavior
      */
     public $pk = 'id';
     public $class_name;
-
+    public $cacheDuration = 3600 * 12;
     /**
      * @var string alias to class.
      */
@@ -42,9 +53,13 @@ class CommentBehavior extends Behavior
 
     public function getHandlerClass()
     {
-
         $class = ($this->handlerClass) ? $this->owner : get_class($this->owner);
         return $class;
+    }
+
+    public function getHandlerHash()
+    {
+        return CMS::hash($this->getHandlerClass());
     }
 
     public function getOwnerTitle()
@@ -59,18 +74,15 @@ class CommentBehavior extends Behavior
     }
 
     /**
-     * @return mixed
+     * Deleted all comments
      */
     public function afterDelete()
     {
-
-
         $pk = $this->getObjectPkAttribute();
         Comments::deleteAll([
-            'handlerClass' => $this->getHandlerClass(),
+            'handler_hash' => $this->getHandlerHash(),
             'object_id' => $this->owner->{$pk}
         ]);
-
         //  return parent::afterDelete($event);
     }
 
@@ -83,7 +95,10 @@ class CommentBehavior extends Behavior
         $pk = $this->getObjectPkAttribute();
         return Comments::find()
             ->published()
-            ->where(['handlerClass' => $this->getHandlerClass(), 'object_id' => $this->owner->{$pk}])
+            ->where(['handler_hash' => $this->getHandlerHash(), 'object_id' => $this->owner->{$pk}])
+            ->cache($this->cacheDuration, new DbDependency([
+                'sql' => 'SELECT COUNT(*) FROM ' . Comments::tableName() . ' WHERE `handler_hash`="' . $this->handlerHash . '" AND `object_id`="' . $this->owner->{$pk} . '"'
+            ]))
             ->count();
     }
 

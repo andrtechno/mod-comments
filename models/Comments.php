@@ -10,7 +10,22 @@ use panix\mod\user\models\User;
 use panix\engine\Html;
 use panix\engine\db\ActiveRecord;
 
-
+/**
+ * Class Comments
+ *
+ * @property string $handler_hash
+ * @property string $handler_class
+ * @property int $object_id
+ * @property int $id
+ * @property string $owner_title
+ * @property string $user_name
+ * @property string $user_email
+ * @property string $ip_create
+ * @property string $text
+ * @property string $user_agent
+ *
+ * @package panix\mod\comments\models
+ */
 class Comments extends ActiveRecord
 {
 
@@ -59,8 +74,8 @@ class Comments extends ActiveRecord
             'format' => 'html',
             'contentOptions' => ['class' => 'text-left'],
         ];
-        $columns['handlerClass'] = [
-            'attribute' => 'handlerClass',
+        $columns['handler_class'] = [
+            'attribute' => 'handler_class',
             'format' => 'html',
             'contentOptions' => ['class' => 'text-left'],
         ];
@@ -118,6 +133,7 @@ class Comments extends ActiveRecord
             if (!Yii::$app->user->isGuest) {
                 $this->user_name = Yii::$app->user->getDisplayName();
                 $this->user_email = Yii::$app->user->email;
+                $this->handler_hash = CMS::hash($this->handler_class);
             }
             //$this->text = htmlspecialchars($this->text);
             return true;
@@ -224,10 +240,10 @@ class Comments extends ActiveRecord
         } else {
             $rulesGuest = [];
         }
-        $rules[] = [['text', 'user_name', 'user_email', 'handlerClass'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process']; // XSS security
-        $rules[] = [['user_agent', 'ip_create', 'user_name', 'user_email', 'text', 'owner_title', 'handlerClass'], 'string'];
+        $rules[] = [['text', 'user_name', 'user_email', 'handler_class'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process']; // XSS security
+        $rules[] = [['user_agent', 'ip_create', 'user_name', 'user_email', 'text', 'owner_title', 'handler_class'], 'string'];
 
-        $rules[] = [['text', 'object_id', 'owner_title', 'handlerClass'], 'required'];
+        $rules[] = [['text', 'object_id', 'owner_title', 'handler_class'], 'required'];
         //  $rules[] = ['date_create', 'date', 'format' => 'yyyy-M-d H:m:s'];
         return \yii\helpers\ArrayHelper::merge($rules, $rulesGuest);
     }

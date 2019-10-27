@@ -23,6 +23,9 @@ class m180917_195313_comments extends Migration
         $this->createTable(Comments::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->null()->unsigned(),
+            'handler_class' => $this->string(255),
+            'handler_hash' => $this->string(8)->notNull(),
+            'object_id' => $this->integer()->notNull()->unsigned(),
             'tree' => $this->smallInteger()->notNull()->unsigned(),
             'lft' => $this->smallInteger()->notNull()->unsigned(),
             'rgt' => $this->smallInteger()->notNull()->unsigned(),
@@ -33,8 +36,6 @@ class m180917_195313_comments extends Migration
             'user_name' => $this->string(255),
             'user_email' => $this->string(255),
             'user_agent' => $this->string(255),
-            'handlerClass' => $this->string(255),
-            'object_id' => $this->integer()->notNull()->unsigned(),
             'switch' => $this->boolean()->defaultValue(1),
             'created_at' => $this->integer(11)->null(),
             'updated_at' => $this->integer(11)->null(),
@@ -46,6 +47,8 @@ class m180917_195313_comments extends Migration
         $this->createIndex('tree', Comments::tableName(), 'tree');
         $this->createIndex('rgt', Comments::tableName(), 'rgt');
         $this->createIndex('depth', Comments::tableName(), 'depth');
+        $this->createIndex('object_id', Comments::tableName(), 'object_id');
+        $this->createIndex('handler_hash', Comments::tableName(), 'handler_hash');
 
         $this->loadSettings();
     }

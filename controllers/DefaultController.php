@@ -171,9 +171,12 @@ class DefaultController extends WebController
      * echo CJSON::encode($result);
      * } */
 
+
     /**
      * Approves a particular model.
-     * @param integer $id the ID of the model to be approve
+     *
+     * @param int $id The ID of the model to be approve
+     * @return array
      */
     public function actionApprove($id)
     {
@@ -200,7 +203,7 @@ class DefaultController extends WebController
 //	$this->enableCsrfValidation = false;
 
         $comment = new Comments();
-        $comment->handlerClass = $reply->handlerClass;
+        $comment->handler_class = $reply->handler_class;
         $comment->object_id = $reply->object_id;
         $comment->owner_title = $reply->owner_title;
         // if (Yii::$app->request->isAjax) {

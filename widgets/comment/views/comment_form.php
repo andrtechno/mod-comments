@@ -36,7 +36,7 @@ use panix\engine\Html;
         ?>
         <?= Html::activeHiddenInput($comment, 'object_id', ['value' => $object_id]); ?>
         <?= Html::activeHiddenInput($comment, 'owner_title', ['value' => $owner_title]); ?>
-        <?= Html::activeHiddenInput($comment, 'handlerClass', ['value' => $handlerClass]); ?>
+        <?= Html::activeHiddenInput($comment, 'handler_class', ['value' => $handler_class]); ?>
 
         <?php if (Yii::$app->user->isGuest) { ?>
             <div class="row">

@@ -21,10 +21,10 @@ Pjax::begin([
     </h3>
 </div>
 <?php
-
+/*
 $comments = \panix\mod\comments\models\Comments::find()
     ->where([
-        'handlerClass' => $model->getHandlerClass(),
+        'handler_class' => $model->getHandlerClass(),
         'object_id' => $model->id
     ])
     ->all();
@@ -33,7 +33,7 @@ foreach ($comments as $c) {
     //echo $c->id;
    // echo '<Br>';
 }
-
+*/
 echo ListView::widget([
     'id' => 'comment-list',
     'dataProvider' => $dataProvider,
