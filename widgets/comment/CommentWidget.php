@@ -29,6 +29,7 @@ class CommentWidget extends Widget
             ->published()
             ->orderBy(['id' => SORT_DESC])
             ->where([
+                'depth' => 1,
                 'handler_hash' => $this->model->getHandlerHash(),
                 'object_id' => $this->model->id
             ]);
