@@ -47,7 +47,7 @@ class CommentsSearch extends Comments
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => self::getSort(),
+            'sort' => static::getSort(),
         ]);
 
         $this->load($params);
@@ -76,6 +76,7 @@ class CommentsSearch extends Comments
     {
         $sort = new \yii\data\Sort([
             'attributes' => [
+                'id',
                 'user_email',
                 'user_name',
                 'handler_class',
@@ -87,6 +88,8 @@ class CommentsSearch extends Comments
                 'text',
             ],
         ]);
+
+        $sort->defaultOrder = ['id' => SORT_DESC];
         return $sort;
     }
 }

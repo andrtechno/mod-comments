@@ -59,19 +59,20 @@ class Comments extends ActiveRecord
         ];
         $columns['user_agent'] = [
             'attribute' => 'user_agent',
-            'format' => 'html',
-            'contentOptions' => ['class' => 'text-left'],
+            'format' => 'userAgent',
+            'filter' => false,
+            'contentOptions' => ['class' => 'text-center'],
         ];
 
         $columns['ip_create'] = [
             'attribute' => 'ip_create',
-            'format' => 'html',
+            'format' => 'ip',
             'contentOptions' => ['class' => 'text-center'],
         ];
 
         $columns['user_email'] = [
             'attribute' => 'user_email',
-            'format' => 'html',
+            'format' => 'email',
             'contentOptions' => ['class' => 'text-left'],
         ];
         $columns['owner_title'] = [
