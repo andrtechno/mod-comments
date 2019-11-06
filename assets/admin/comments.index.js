@@ -14,7 +14,7 @@ function setCommentsStatus(status_id, el)
 
 
     $('#' + dialogId).dialog({
-        title: $(el).attr('data-question'),
+        title: $(el).data('confirm'),
         autoOpen: true,
         width: 300,
         modal: true,
