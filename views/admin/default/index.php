@@ -5,7 +5,7 @@ use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
 
 Pjax::begin([
-    'id'=>  'pjax-'.strtolower(basename($dataProvider->query->modelClass)),
+    'dataProvider'=>$dataProvider
 ]);
 
 //echo 'pjax-'.strtolower(basename($dataProvider->query->modelClass));
