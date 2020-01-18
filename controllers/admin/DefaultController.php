@@ -93,7 +93,7 @@ class DefaultController extends \panix\engine\controllers\AdminController
     {
         return [
            [
-                'label' => Yii::t('app', 'SETTINGS'),
+                'label' => Yii::t('app/default', 'SETTINGS'),
                 'url' => array('/admin/comments/settings'),
                 'icon' => Html::icon('settings'),
             ],

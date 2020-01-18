@@ -23,7 +23,7 @@ $form = ActiveForm::begin([
 
 <?= $form->field($model, 'text')->textarea()->label(false); ?>
     <div class="form-group text-center">
-        <?= \panix\engine\Html::submitButton(Yii::t('app', 'UPDATE'), ['class' => 'btn btn-primary']) ?>
+        <?= \panix\engine\Html::submitButton(Yii::t('app/default', 'UPDATE'), ['class' => 'btn btn-primary']) ?>
     </div>
 
 <?php ActiveForm::end(); ?>

@@ -25,9 +25,9 @@ $form = ActiveForm::begin([
 <?= $form->field($model, 'text')->textarea()->label(false); ?>
 
 <div class="text-right" style="margin-top:10px;">
-    <?= Html::submitButton(Yii::t('app', 'SEND'), ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app/default', 'SEND'), ['class' => 'btn btn-success']) ?>
     <?php
-    echo Html::a(Yii::t('app', 'Ответить'), 'javascript:void(0)', ['class' => 'btn btn-success']);
+    echo Html::a(Yii::t('app/default', 'Ответить'), 'javascript:void(0)', ['class' => 'btn btn-success']);
     ?>
 </div>
 

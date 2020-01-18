@@ -11,7 +11,7 @@ class SettingsController extends AdminController {
     public $topButtons = false;
 
     public function actionIndex() {
-        $this->pageName = Yii::t('app', 'SETTINGS');
+        $this->pageName = Yii::t('app/default', 'SETTINGS');
         $this->breadcrumbs[] = [
             'label' => Yii::t('comments/default', 'MODULE_NAME'),
             'url' => ['/admin/comments']

@@ -9,7 +9,7 @@ Pjax::begin([
 ?>
 <div class="heading-gradient">
     <h3>
-        <?= Yii::t('app', 'REVIEWS', ['n' => $model->commentsCount]) ?>
+        <?= Yii::t('app/default', 'REVIEWS', ['n' => $model->commentsCount]) ?>
     </h3>
 </div>
 <?php

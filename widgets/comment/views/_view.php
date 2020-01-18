@@ -40,7 +40,7 @@ use panix\engine\CMS;
                         echo Html::a(Html::icon('edit'), ['/comments/default/update', 'id' => $model->id], [
                             'class' => 'btn btn-sm btn-primary comment-update',
                             'data-id' => $model->id,
-                            'title' => Yii::t('app', 'UPDATE')
+                            'title' => Yii::t('app/default', 'UPDATE')
                         ]);
                         //}
                         ?>
@@ -50,7 +50,7 @@ use panix\engine\CMS;
                                 'class' => 'btn btn-sm btn-danger comment-delete',
                                 'data-pjax' => '0',
                                 'data-id' => $model->id,
-                                'title' => Yii::t('app', 'DELETE')
+                                'title' => Yii::t('app/default', 'DELETE')
                             ]);
                         }
                         ?>

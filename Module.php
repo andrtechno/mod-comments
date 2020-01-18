@@ -95,7 +95,7 @@ class Module extends WebModule implements BootstrapInterface{
         return array(
             $this->adminMenu['system']['items'][0],
             array(
-                'label' => Yii::t('app', 'SETTINGS'),
+                'label' => Yii::t('app/default', 'SETTINGS'),
                 'url' => array('/admin/comments/settings'),
                 'active' => ($c == 'admin/settings') ? true : false,
                 'icon' => Html::icon('icon-settings'),
