@@ -5,6 +5,7 @@ use yii\widgets\ListView;
 
 Pjax::begin([
     'id' => 'pjax-comments',
+    'dataProvider' => $dataProvider,
 ]);
 ?>
 <div class="heading-gradient">

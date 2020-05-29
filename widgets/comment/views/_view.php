@@ -20,7 +20,7 @@ use panix\engine\CMS;
                         <div class="comment-user-name">
                             <?php
                             if ($model->user_id) {
-                                echo Html::icon('check', ['class' => 'text-success']);
+                                echo Html::icon('user-outline', ['class' => 'text-success']);
                             }
                             ?>
                             <strong><?= Html::encode($model->user_name); ?></strong>

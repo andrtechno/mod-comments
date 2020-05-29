@@ -83,7 +83,8 @@ class Module extends WebModule implements BootstrapInterface{
                         'label' => Yii::t('comments/default', 'MODULE_NAME'),
                         'url' => ['/admin/comments'],
                         'icon' => $this->icon,
-                        'count' => $this->countComments
+                        'count' => $this->countComments,
+                        'visible' => Yii::$app->user->can('/comments/admin/default/index') || Yii::$app->user->can('/comments/admin/default/*')
                     ],
                 ],
             ],

@@ -2,6 +2,7 @@
 
 namespace panix\mod\comments\controllers;
 
+use panix\engine\Html;
 use Yii;
 use yii\helpers\Json;
 use panix\engine\CMS;
@@ -88,43 +89,31 @@ class DefaultController extends WebController
 
     public function actionUpdate()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+
         $model = Comments::findModel(Yii::$app->request->get('id'));
         $result = [];
-        //if (Yii::$app->request->isAjax) {
-        if ($model->hasAccessControl() || Yii::$app->user->can('admin')) {
+        $result['success'] = false;
+        if (Yii::$app->user->can('admin') && Yii::$app->request->isAjax) {
             if (isset($_POST['Comments'])) {
                 $model->attributes = $_POST['Comments'];
                 if ($model->validate()) {
-                    $model->save();
-                    $result = [
-                        'status' => 'success',
-                        'message' => 'Комментарий успешно отредактирован',
-                        'response' => nl2br(CMS::bb_decode(Html::text($model->text)))
-                    ];
+                    $model->saveNode();
+                    $result['success'] = true;
+                    $result['message'] = Yii::t('comments/default', 'UPDATE_SUCCESS');
+                    $result['response'] = nl2br(Html::text($model->text));
                 } else {
-                    $result = [
-                        'status' => 'error',
-                        'response' => $model->getErrors()
-                    ];
+                    $result['response'] = $model->getErrors();
                 }
 
             } else {
-                $result = [
-                    'status' => 'success',
-                    'result' => $this->renderPartial('_edit_form', ['model' => $model])
-                ];
-                //return $this->renderPartial('_edit_form', ['model' => $model]);
+                $result['success'] = true;
+                $result['response'] = $this->renderPartial('_edit_form', ['model' => $model]);
             }
         } else {
-            $result['status'] = 'error';
-            $result['message'] = 'Access denied 1';
+            $result['message'] = Yii::t('app/error', '403');
         }
-        // } else {
-        //     $result['status'] = 'error';
-        //     $result['message'] = 'Access denied 2';
-        // }
-        return $result;
+
+        return $this->asJson($result);
     }
 
     /**
@@ -225,8 +214,6 @@ class DefaultController extends WebController
             Yii::$app->response->format = Response::FORMAT_HTML;
             return $this->renderPartial('_reply_form', ['model' => $comment, 'reply' => $reply]);
         }
-        //}
-
     }
 
     /**
@@ -237,15 +224,13 @@ class DefaultController extends WebController
      */
     public function actionAdd()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $id = Yii::$app->request->get('id');
         $comment = new Comments;
         $reply = Comments::findOne($id);
 
         $request = Yii::$app->request;
         $json = [];
-        // if ($request->isPost && $request->isAjax) {
+        $json['success'] = false;
 
         $comment->attributes = $request->post('Comments');
         if ($comment->validate()) {
@@ -255,27 +240,18 @@ class DefaultController extends WebController
 
             $comment->saveNode();
 
-
-            //
             Yii::$app->session['caf'] = time();
-
-            $json = [
-                'success' => true,
-                'message' => Yii::t('comments/default', $comment->switch ? 'SUCCESS_ADD' : 'SUCCESS_ADD_MODERATION')
-            ];
+            $json['success'] = true;
+            $json['message'] = Yii::t('comments/default', $comment->switch ? 'SUCCESS_ADD' : 'SUCCESS_ADD_MODERATION');
 
         } else {
 
-            $json = [
-                'success' => false,
-                'message' => 'Error',
-                'errors' => $comment->getErrors()
-            ];
+            $json['message'] = 'Error';
+            $json['errors'] = $comment->getErrors();
+
         }
 
-        // }
-
-        return $json;
+        return $this->asJson($json);
     }
 
 }

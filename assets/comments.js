@@ -29,15 +29,19 @@ $(function () {
 
         xhr = $.ajax({
             url: that.attr('href'),
+            type: 'json',
             dataType: 'json',
             type: 'POST',
             success: function (data) {
                 console.log(data);
-                if (data.status === 'success') {
-                    common.notify(data.message, 'success');
-                    console.log(that.data('id'));
-                    $('#comment_text_' + that.data('id')).html(data.result);
+                if (data.success) {
+                    if(data.message !== undefined)
+                        common.notify(data.message, 'success');
+
+                    $('#comment_text_' + that.data('id')).html(data.response);
                     //$.pjax.reload({container: '#pjax-comments', async: false});
+                } else {
+                    common.notify(data.message, 'error');
                 }
             }
         });
@@ -59,7 +63,7 @@ $(function () {
                 console.log('.comment-reply');
                 //$('#test' + that.data('id')).html(data);
                 //$('.container-reply').html(data);
-                $('#container-reply-'+that.data('id')).html(data);
+                $('#container-reply-' + that.data('id')).html(data);
 
 
             }

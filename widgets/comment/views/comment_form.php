@@ -50,7 +50,7 @@ use panix\engine\Html;
         <?php } ?>
         <?= $form->field($comment, 'text')->textarea() ?>
         <div class="form-group text-center">
-            <?= Html::submitButton(Yii::t('app/default', 'SEND'), ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('app/default', 'SEND1'), ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
@@ -76,7 +76,8 @@ use panix\engine\Html;
                     
                 if (data.success) {
                     common.notify(data.message,'success');
-                    $.pjax.reload('#pjax-comments', {timeout : false});
+                    $('#comments-text').val('');
+                    $.pjax.reload('#pjax-grid-comments', {timeout : false});
                 }else{
 
 
