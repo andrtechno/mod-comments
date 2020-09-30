@@ -1,5 +1,5 @@
 <?php
-$this->breadcrumbs=array(
+$this->view->params['breadcrumbs']=array(
 	Yii::t('CommentsModule.msg', 'Comments')=>array('index'),
 	Yii::t('CommentsModule.msg', 'Manage'),
 );

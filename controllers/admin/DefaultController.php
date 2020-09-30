@@ -31,7 +31,7 @@ class DefaultController extends \panix\engine\controllers\AdminController
 
         $this->pageName = Yii::t('comments/default', 'MODULE_NAME');
 
-        $this->breadcrumbs = array($this->pageName);
+        $this->view->params['breadcrumbs'] = array($this->pageName);
 
 
         $searchModel = new CommentsSearch();
