@@ -1,6 +1,7 @@
 <?php
+namespace panix\mod\comments\widgets\comment_1;
 
-class CommentWidget extends CWidget {
+class CommentWidget extends \yii\base\Widget {
 
     public $model;
 
